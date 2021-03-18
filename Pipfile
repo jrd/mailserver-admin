@@ -1,0 +1,29 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+# PEP8
+flake8 = "*"
+# TODO in codes as WARNING checkstyle
+flake8-todo = "*"
+# Simple http and wsgi server for dev
+werkzeug = "*"
+# Better than polling for werkzeug
+watchdog = "*"
+
+[packages]
+django = "~=3.1"
+# More commands for Django
+django-extensions = "~=3.1"
+# Allow filter queryset based on model fields
+django-filter = "~=2.4"
+# Mysql/Mariadb driver
+mysqlclient = "~=2.0"
+# Postgresql driver
+psycopg2-binary = "~=2.8"
+django-debug-toolbar = "~=3.0"
+
+[requires]
+python_version = "3.8"
