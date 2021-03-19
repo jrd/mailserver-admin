@@ -1,0 +1,53 @@
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% block blockbots %}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache"/>{% endblock %}
+    {% block blockviewport %}<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">{% endblock %}
+    {% block blockfavicon %}<link rel="shortcut icon" href="/favicon.ico">{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "mailserveradmin/css/base.css" %}{% endblock %}">
+    {% block extrastyle %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+<div id="wrapper">
+    {% block header %}
+    <div id="header">
+        <div id="branding">{% block branding %}{% endblock %}</div>
+    </div>
+    {% endblock %}
+    {% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'mailserveradmin:index' %}">{% translate 'Home' %}</a>
+        {% if title %} &rsaquo; {{ title }}{% endif %}
+    </div>
+    {% endblock %}
+    {% block nav-sidebar %}
+    {% include "mailserveradmin/nav_sidebar.html" %}
+    {% endblock %}
+    {% block content-wrapper %}
+    <div class="content-wrapper">
+        {% block messages %}
+        {% if messages %}
+        <ul class="messagelist">{% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+        {% endfor %}</ul>
+        {% endif %}
+        {% endblock messages %}
+        {% block content %}
+        <div id="content" class="{% block contentclass %}content{% endblock %}">
+          {{ content }}
+        </div>
+        {% endblock %}
+        <!-- END Content -->
+      </div>
+    </div>
+    {% endblock %}
+    {% block footer %}<div id="footer"></div>{% endblock %}
+</div>
+</body>
+</html>
+<!-- vim: set ft=htmldjango: -->

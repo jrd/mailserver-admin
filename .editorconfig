@@ -1,0 +1,14 @@
+root = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+line_length = 160
+skip_glob = mailserveradmin/migrations/*
+skip_gitignore = true
+multi_line_output = 3
+reverse_relative = true
+use_parentheses = true
+combine_star = true
+include_trailing_comma = true
+force_grid_wrap = 2

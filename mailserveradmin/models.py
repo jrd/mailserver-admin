@@ -1,11 +1,18 @@
-from re import compile
-from crypt import crypt, METHOD_SHA256
+from crypt import (
+    METHOD_SHA256,
+    crypt,
+)
 from hmac import compare_digest as compare_hash
+from re import compile
 
+from django.contrib.auth.models import (
+    AbstractUser,
+    BaseUserManager,
+)
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 
 def dkim_validator(value):
@@ -34,6 +41,9 @@ class MailDomain(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('domain-detail', kwargs={'pk': self.pk})
 
     class Meta:
         db_table = 'mail_domains'
@@ -121,6 +131,9 @@ class MailUser(AbstractUser):
     def __str__(self):
         return f"{self.get_full_name()} active:{self.is_active} admin:{self.is_domain_admin} send_only:{self.send_only}"
 
+    def get_absolute_url(self):
+        return reverse('user-detail', kwargs={'pk': self.pk})
+
     class Meta:
         db_table = 'mail_users'
         ordering = ['name', 'domain__name']
@@ -136,6 +149,9 @@ class MailAlias(models.Model):
 
     def __str__(self):
         return f"{self.name}@{self.domain__name} → {self.destination}"
+
+    def get_absolute_url(self):
+        return reverse('alias-detail', kwargs={'pk': self.pk})
 
     class Meta:
         db_table = 'mail_alias'
