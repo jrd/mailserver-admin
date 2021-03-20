@@ -1,6 +1,11 @@
+from django.contrib.auth.views import (
+    LoginView,
+    LogoutView,
+)
 from django.urls import path
 
 from . import app_name  # noqa F401
+from .forms import AuthenticationForm
 from .views import (
     AliasCreateView,
     AliasDeleteView,
@@ -22,6 +27,11 @@ from .views import (
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='index'),
+    path('login', LoginView.as_view(
+        authentication_form=AuthenticationForm,
+        template_name=f'{app_name}/login.html',
+    ), name='login'),
+    path('logout', LogoutView.as_view(), name='logout'),
     path('domains', DomainListView.as_view(), name='domains'),
     path('domain/add', DomainCreateView.as_view(), name='domain-add'),
     path('domain/<int:pk>', DomainView.as_view(), name='domain-detail'),

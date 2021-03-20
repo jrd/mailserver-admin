@@ -19,6 +19,10 @@ django = "~=3.1"
 django-extensions = "~=3.1"
 # Allow filter queryset based on model fields
 django-filter = "~=2.4"
+# Fontawesome (free version)
+fontawesome-free = "~=5.14"
+# Boostrap 4
+django-bootstrap4 = "~=2.0"
 # Mysql/Mariadb driver
 mysqlclient = "~=2.0"
 # Postgresql driver

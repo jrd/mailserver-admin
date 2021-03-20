@@ -129,7 +129,10 @@ class MailUser(AbstractUser):
         return self.password and not self.password.startswith('*')
 
     def __str__(self):
-        return f"{self.get_full_name()} active:{self.is_active} admin:{self.is_domain_admin} send_only:{self.send_only}"
+        return (
+            f"{self.get_full_name()} ({self.is_active})"
+            f" S:{self.is_superuser} A:{self.is_domain_admin} SO:{self.send_only}"
+        )
 
     def get_absolute_url(self):
         return reverse('user-detail', kwargs={'pk': self.pk})

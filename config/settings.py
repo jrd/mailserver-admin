@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'debug_toolbar',
+    'fontawesome-free',
+    'bootstrap4',
     'mailserveradmin',
 ]
 
@@ -80,6 +82,8 @@ AUTH_USER_MODEL = 'mailserveradmin.MailUser'
 AUTHENTICATION_BACKENDS = (
     'mailserveradmin.auth.MailAuthBackend',
 )
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 TEMPLATES = [
     {

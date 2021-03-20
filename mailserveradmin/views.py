@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin as OrigLoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
     DetailView,
@@ -11,12 +12,15 @@ from django.views.generic.edit import (
 )
 
 from . import app_name
-# from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import (
     MailAlias,
     MailDomain,
     MailUser,
 )
+
+
+class LoginRequiredMixin(OrigLoginRequiredMixin):
+    login_url = reverse_lazy(f'{app_name}:login')
 
 
 class DashboardView(TemplateView):
@@ -28,7 +32,7 @@ class DashboardView(TemplateView):
 # ##############
 
 
-class DomainListView(ListView):
+class DomainListView(LoginRequiredMixin, ListView):
     model = MailDomain
     paginate_by = 10
     context_object_name = 'domains'
@@ -41,22 +45,22 @@ class DomainListView(ListView):
         return qs
 
 
-class DomainView(DetailView):
+class DomainView(LoginRequiredMixin, DetailView):
     model = MailDomain
     context_object_name = 'domain'
 
 
-class DomainCreateView(CreateView):
+class DomainCreateView(LoginRequiredMixin, CreateView):
     model = MailDomain
     fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
 
 
-class DomainUpdateView(UpdateView):
+class DomainUpdateView(LoginRequiredMixin, UpdateView):
     model = MailDomain
     fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
 
 
-class DomainDeleteView(DeleteView):
+class DomainDeleteView(LoginRequiredMixin, DeleteView):
     model = MailDomain
     success_url = reverse_lazy('domains')
 
@@ -66,7 +70,7 @@ class DomainDeleteView(DeleteView):
 # ############
 
 
-class UserListView(ListView):
+class UserListView(LoginRequiredMixin, ListView):
     model = MailUser
     paginate_by = 50
     context_object_name = 'users'
@@ -79,22 +83,22 @@ class UserListView(ListView):
         return qs
 
 
-class UserView(DetailView):
+class UserView(LoginRequiredMixin, DetailView):
     model = MailUser
     context_object_name = 'user'
 
 
-class UserCreateView(CreateView):
+class UserCreateView(LoginRequiredMixin, CreateView):
     model = MailUser
     fields = ['name', 'domain', 'is_superuser', 'is_admin', 'send_only', 'quota']
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = MailUser
     fields = ['name', 'domain', 'is_superuser', 'is_admin', 'send_only', 'quota']
 
 
-class UserDeleteView(DeleteView):
+class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = MailUser
     success_url = reverse_lazy('users')
 
@@ -104,7 +108,7 @@ class UserDeleteView(DeleteView):
 # #############
 
 
-class AliasListView(ListView):
+class AliasListView(LoginRequiredMixin, ListView):
     model = MailAlias
     paginate_by = 50
     context_object_name = 'aliases'
@@ -117,21 +121,21 @@ class AliasListView(ListView):
         return qs
 
 
-class AliasView(DetailView):
+class AliasView(LoginRequiredMixin, DetailView):
     model = MailAlias
     context_object_name = 'alias'
 
 
-class AliasCreateView(CreateView):
+class AliasCreateView(LoginRequiredMixin, CreateView):
     model = MailAlias
     fields = ['name', 'domain', 'destination']
 
 
-class AliasUpdateView(UpdateView):
+class AliasUpdateView(LoginRequiredMixin, UpdateView):
     model = MailAlias
     fields = ['name', 'domain', 'destination']
 
 
-class AliasDeleteView(DeleteView):
+class AliasDeleteView(LoginRequiredMixin, DeleteView):
     model = MailAlias
     success_url = reverse_lazy('aliases')
