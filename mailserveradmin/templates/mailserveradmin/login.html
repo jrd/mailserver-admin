@@ -1,7 +1,12 @@
 {% extends "mailserveradmin/base.html" %}{% load i18n static %}
 {% block title %}Mailserver administration{% endblock %}
+{% block bodyclass %}login{% endblock %}
+{% block header %}
+    <div id="header-logo">
+        <div class="logo logo-long">Mailserver administration</div>
+    </div>
+{% endblock %}
 {% block content %}
-<h1>Mailserver administration</h1>
 <form method="post" action="">
     {% csrf_token %}
     <div class="form-group field-text">
@@ -24,7 +29,7 @@
 </form>
 {% endblock %}
 {% block footer %}
-<a href="{{ webmail_url }}" class="btn btn-secondary btn-lg btn-block">Webmail</a><br>
-<small class="text-muted"><a href="{{ vendor_url }}">{{ vendor_name }}</a></small>
+<a href="{{ webmail_url }}" class="btn btn-secondary btn-lg btn-block">Webmail</a><br/>
+<small class="text-muted"><a href="{{ vendor_url }}" target="_blank">{{ vendor_name }}</a></small>
 {% endblock %}
 {# vim: set ft=htmldjango: #}

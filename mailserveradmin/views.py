@@ -1,10 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin as OrigLoginRequiredMixin
-from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView as OrigLoginView
+from django.contrib.auth.views import LogoutView  # noqa F401
+from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect
 from django.views.generic import (
     DetailView,
     ListView,
-    TemplateView,
 )
+from django.views.generic.base import ContextMixin
 from django.views.generic.edit import (
     CreateView,
     DeleteView,
@@ -12,19 +15,40 @@ from django.views.generic.edit import (
 )
 
 from . import app_name
+from .forms import AuthenticationForm
 from .models import (
     MailAlias,
     MailDomain,
     MailUser,
 )
 
+# ##############
+# ### COMMON ###
+# ##############
+
+extra_context = {
+    'webmail_url': 'https://webmail.enialis.net',
+    'vendor_name': "Sources on Github",
+    'vendor_url': 'https://github.com/jrd/mailserver-admin',
+}
+
+
+class CommonContextMixin(ContextMixin):
+    extra_context = extra_context
+
+
+class LoginView(CommonContextMixin, OrigLoginView):
+    authentication_form = AuthenticationForm
+    template_name = f'{app_name}/login.html'
+
 
 class LoginRequiredMixin(OrigLoginRequiredMixin):
     login_url = reverse_lazy(f'{app_name}:login')
 
 
-class DashboardView(TemplateView):
-    template_name = f'{app_name}/dashboard.html'
+
+def index_view(request):
+    return redirect(reverse(f'{app_name}:domains'))
 
 
 # ##############
@@ -32,10 +56,13 @@ class DashboardView(TemplateView):
 # ##############
 
 
-class DomainListView(LoginRequiredMixin, ListView):
+class DomainListView(CommonContextMixin, LoginRequiredMixin, ListView):
     model = MailDomain
     paginate_by = 10
     context_object_name = 'domains'
+    extra_context = extra_context | {
+        'title': 'Domains',
+    }
 
     def get_queryset(self):
         qs = super().get_queryset()

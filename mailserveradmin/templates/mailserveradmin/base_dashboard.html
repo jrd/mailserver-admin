@@ -1,0 +1,61 @@
+{% extends "mailserveradmin/base.html" %}{% load i18n static %}
+{% block title %}{{ title }} administration{% endblock %}
+{% block header %}
+    <nav class="navbar" role="navigation">
+        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
+            <i class="fa fa-fw fa-bars"></i>
+        </button>
+        <div id="header-logo">
+            <a class="logo logo-long" title="mailserver-admin" href="/">
+                mailserver-admin
+            </a>
+        <div>
+    </nav>
+    <div class="navbar-user">
+        <span class="user-email">
+            <i class="fa fa-fw fas fa-user"></i>
+            <span>{{ user.email }}</span>
+        </span>
+        <a href="{% url "mailserveradmin:logout" %}" referrerpolicy=origin-when-cross-origin">
+            <i class="fa fa-fw fas fa-sign-out-alt"></i>
+            <span>Sign out</span>
+        </a>
+    </div>
+{% endblock %}
+{% block blockcontent %}
+<main class="{% block contentclass %}grid{% endblock %}">
+    <aside id="sidebar">
+        <button id="navigation-toggler2" type="button" aria-label="Toggle navigation">
+            <i class="fa fa-fw fa-bars"></i>
+            <span>Menu</span>
+        </button>
+        <ul class="sidebar">
+            <li>
+                <a href="{%url "mailserveradmin:domains" %}">
+                    <i class="fa fa-fw fas fa-envelope"></i>
+                    <span>Domains</span>
+                </a>
+            </li>
+            <li>
+                <a href="{%url "mailserveradmin:users" %}">
+                    <i class="fa fa-fw fas fa-user"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="{%url "mailserveradmin:aliases" %}">
+                    <i class="fa fa-fw fas fa-list-alt"></i>
+                    <span>Aliases</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+    <div id="content">
+        {% block content %}{{ content }}{% endblock %}
+    </div>
+</main>
+{% endblock %}
+{% block footer %}
+    <small class="text-muted"><a href="{{ vendor_url }}" target="_blank">{{ vendor_name }}</a></small>
+{% endblock %}
+{# vim: set ft=htmldjango: #}

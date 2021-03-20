@@ -15,8 +15,10 @@ class AuthenticationForm(OrigAuthenticationForm):
         self.fields['username'].max_length = username_max_length
         self.fields['username'].widget.attrs['maxlength'] = username_max_length
         self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['username'].widget.attrs['placeholder'] = 'Email or username'
         self.fields['username'].label = 'Email'
         self.fields['password'].widget.attrs['class'] = 'form-control'
+        self.fields['password'].widget.attrs['placeholder'] = 'Password'
 
     def confirm_login_allowed(self, user):
         super().confirm_login_allowed(user)

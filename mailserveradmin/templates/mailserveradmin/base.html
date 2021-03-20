@@ -8,31 +8,24 @@
     {% block blockbots %}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache"/>{% endblock %}
     {% block blockviewport %}<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">{% endblock %}
     {% block blockfavicon %}<link rel="shortcut icon" href="/favicon.ico">{% endblock %}
-    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "mailserveradmin/css/base.css" %}{% endblock %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'fontawesome_free/css/all.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static "fontawesome_free/css/all.min.css" %}">
     {% bootstrap_css %}
-    {% bootstrap_javascript jquery='full' %}
+    {% bootstrap_javascript jquery="full" %}
+    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "mailserveradmin/css/app.css" %}{% endblock %}">
+    <script type="text/javascript" src="{% block javascript %}{% static "mailserveradmin/js/app.js" %}{% endblock %}"></script>
     {% block extrastyle %}{% endblock %}
     {% block extrahead %}{% endblock %}
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
 <div id="wrapper">
-    {% block header %}
-    <div id="header">
-        <div id="branding">{% block branding %}{% endblock %}</div>
-    </div>
-    {% endblock %}
-    {% block breadcrumbs %}
-    <div class="breadcrumbs">
-        <a href="{% url 'mailserveradmin:index' %}">{% translate 'Home' %}</a>
-        {% if title %} &rsaquo; {{ title }}{% endif %}
-    </div>
-    {% endblock %}
-    {% block nav-sidebar %}
-    {% include "mailserveradmin/nav_sidebar.html" %}
+    {% block blockheader %}
+    <header>
+        {% block header %}
+        {% endblock %}
+    </header>
     {% endblock %}
     {% block content-wrapper %}
-    <div class="content-wrapper">
+    <div id="content-wrapper">
         {% block messages %}
         {% if messages %}
         <ul class="messagelist">{% for message in messages %}
@@ -40,15 +33,14 @@
         {% endfor %}</ul>
         {% endif %}
         {% endblock messages %}
-        {% block content %}
-        <div id="content" class="{% block contentclass %}content{% endblock %}">
-          {{ content }}
-        </div>
+        {% block blockcontent %}
+        <main class="{% block contentclass %}content{% endblock %}">
+            {% block content %}{{ content }}{% endblock %}
+        </main>
         {% endblock %}
-      </div>
     </div>
+    {% block blockfooter %}<footer>{% block footer %}{% endblock %}</footer>{% endblock %}
     {% endblock %}
-    {% block footer %}<div id="footer"></div>{% endblock %}
 </div>
 </body>
 </html>

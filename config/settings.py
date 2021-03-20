@@ -82,8 +82,8 @@ AUTH_USER_MODEL = 'mailserveradmin.MailUser'
 AUTHENTICATION_BACKENDS = (
     'mailserveradmin.auth.MailAuthBackend',
 )
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'mailserveradmin:domains'
+LOGOUT_REDIRECT_URL = 'mailserveradmin:login'
 
 TEMPLATES = [
     {
