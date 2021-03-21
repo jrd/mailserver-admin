@@ -318,4 +318,69 @@ input[disabled] {
     border-radius: var(--border-radius);
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
+.form-widget input.form-control,
+.form-widget select.form-control,
+.form-widget textarea.form-control {
+    border: 0;
+    padding: 3px 7px 4px;
+    padding-left: 7px;
+    box-shadow: 0 0 0 1px rgba(43,45,80,.16),0 0 0 1px rgba(6,122,184,0),0 0 0 2px rgba(6,122,184,0),0 1px 1px rgba(0,0,0,.08);
+    height: 30px;
+    max-width: 350px;
+    white-space: nowrap;
+    word-break: keep-all;
+    transition: box-shadow .08s ease-in,color .08s ease-in;
+}
 /* END FORMS */
+/* CRUD HEADER */
+div.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    padding: 10px 0;
+}
+div.content-header div.title {
+    align-self: center;
+    flex: 1;
+}
+div.content-header div.title > h1 {
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--text-color-dark);
+    margin: 0;
+}
+div.content-header div.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 10px;
+}
+div.content-header div.actions .btn {
+    margin-left: 10px;
+}
+div.content-search {
+    display: flex;
+    max-width: 480px;
+    padding: 0 0 10px 0;
+}
+div.content-search .form-action {
+    width: 100%;
+}
+div.content-search .form-group {
+    margin: 0;
+    padding: 0;
+}
+div.content-search input[type="search"].form-control {
+    background-color: var(--white);
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path fill="%23aaa" d="M1216 832q0-185-131.5-316.5t-316.5-131.5-316.5 131.5-131.5 316.5 131.5 316.5 316.5 131.5 316.5-131.5 131.5-316.5zm512 832q0 52-38 90t-90 38q-54 0-90-38l-343-342q-179 124-399 124-143 0-273.5-55.5t-225-150-150-225-55.5-273.5 55.5-273.5 150-225 225-150 273.5-55.5 273.5 55.5 225 150 150 225 55.5 273.5q0 220-124 399l343 343q37 37 37 90z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: 13px 13px;
+    background-position: 10px 8px;
+    padding-left: 32px;
+    min-width: 100%;
+}
+/* END CRUD HEADER */

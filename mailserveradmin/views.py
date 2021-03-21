@@ -46,9 +46,8 @@ class LoginRequiredMixin(OrigLoginRequiredMixin):
     login_url = reverse_lazy(f'{app_name}:login')
 
 
-
 def index_view(request):
-    return redirect(reverse(f'{app_name}:domains'))
+    return redirect(reverse(f'{app_name}:domain-list'))
 
 
 # ##############
@@ -59,16 +58,17 @@ def index_view(request):
 class DomainListView(CommonContextMixin, LoginRequiredMixin, ListView):
     model = MailDomain
     paginate_by = 10
-    context_object_name = 'domains'
+    context_object_name = 'domain_list'
     extra_context = extra_context | {
+        'model_name': 'domain',
         'title': 'Domains',
     }
 
     def get_queryset(self):
         qs = super().get_queryset()
-        # if not self.request.user.is_superadmin:
-        #     assert(self.request.user.is_admin)
-        #     qs = qs.filter(id=self.request.user.domain_id)
+        if not self.request.user.is_superuser:
+            assert(self.request.user.is_admin)
+            qs = qs.filter(id=self.request.user.domain_id)
         return qs
 
 
@@ -89,7 +89,7 @@ class DomainUpdateView(LoginRequiredMixin, UpdateView):
 
 class DomainDeleteView(LoginRequiredMixin, DeleteView):
     model = MailDomain
-    success_url = reverse_lazy('domains')
+    success_url = reverse_lazy('domain-list')
 
 
 # ############
@@ -100,7 +100,7 @@ class DomainDeleteView(LoginRequiredMixin, DeleteView):
 class UserListView(LoginRequiredMixin, ListView):
     model = MailUser
     paginate_by = 50
-    context_object_name = 'users'
+    context_object_name = 'user_list'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -127,7 +127,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = MailUser
-    success_url = reverse_lazy('users')
+    success_url = reverse_lazy('user-list')
 
 
 # #############
@@ -138,7 +138,7 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
 class AliasListView(LoginRequiredMixin, ListView):
     model = MailAlias
     paginate_by = 50
-    context_object_name = 'aliases'
+    context_object_name = 'alias_list'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -165,4 +165,4 @@ class AliasUpdateView(LoginRequiredMixin, UpdateView):
 
 class AliasDeleteView(LoginRequiredMixin, DeleteView):
     model = MailAlias
-    success_url = reverse_lazy('aliases')
+    success_url = reverse_lazy('alias-list')

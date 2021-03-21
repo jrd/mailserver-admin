@@ -1,0 +1,71 @@
+{% extends "mailserveradmin/base_crud.html" %}{% load i18n static %}
+{% block content-actions %}
+<a class="action-new btn btn-primary" href="{% url "mailserveradmin:"|add:model_name|add:"-add" %}">Add {{ model_name|capfirst }}</a>
+{% endblock %}
+{% block content-extra %}
+<div class="content-search">
+    <div class="form-action form-action-search">
+        <form method="get">
+            <div class="form-group">
+                <div class="form-widget">
+                    <input class="form-control" type="search" name="query" value="" placeholder="Search">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block content-panel %}
+<div class="content-panel-body">
+    {% block content-panel-body %}
+    <table>
+        <thead>
+            <tr>
+                {% block content-table-head-row %}
+                {% endblock %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                {% block content-table-row %}
+                {% endblock %}
+            </tr>
+            {% empty %}
+            <tr>
+                {% block content-table-empty %}
+                {% endblock %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+</div>
+<div class="content-panel-footer">
+    {% block content-panel-footer %}
+    {% if object_list|length %}
+    <div class="list-pagination">
+        <div class="list-pagination-counter">
+            <strong>{{ object_list|length }}</strong> results
+        </div>
+        <div class="current-page">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}
+        </div>
+        <ul class="pagination">
+            <li class="page-item{% if not object_list.has_previous %} disabled{% endif %}">
+                <a class="page-link" href="?page={{ object_list.previous_page_number }}">
+                    <i class="fa fa-angle-left mx-1"></i> <span class="btn-label">Previous</span>
+                </a>
+            </li>
+            <li class="page-item{% if not object_list.has_next %} disabled{% endif %}">
+                <a class="page-link" href="?page={{ object_list.next_page_number }}">
+                    <span class="btn-label">Next</span> <i class="fa fa-angle-right mx-1"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+    {% endblock %}
+</div>
+{% endblock %}
+{# vim: set ft=htmldjango: #}

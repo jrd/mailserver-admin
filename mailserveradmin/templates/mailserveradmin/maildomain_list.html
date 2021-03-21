@@ -1,28 +1,42 @@
-{% extends "mailserveradmin/base_dashboard.html" %}{% load i18n static %}
-{% block content %}
-<ul>
-  {% for domain in domains %}
-  <li>{{ domain.name }}</li>
-  {% empty %}
-  <li>No domain yet</li>
-  {% endfor %}
-</ul>
-{% if domains.paginator.num_pages %}
-<div class="pagination">
-  <span class="step-links">
-    {% if domains.has_previous %}
-    <a href="?page=1">&laquo; first</a>
-    <a href="?page={{ domains.previous_page_number }}">previous</a>
-    {% endif %}
-    <span class="current">
-      Page {{ domains.number }} of {{ domains.paginator.num_pages }}.
-    </span>
-    {% if domains.has_next %}
-    <a href="?page={{ domains.next_page_number }}">next</a>
-    <a href="?page={{ domains.paginator.num_pages }}">last &raquo;</a>
-    {% endif %}
-  </span>
-</div>
-{% endif %}
+{% extends "mailserveradmin/base_list.html" %}{% load i18n static %}
+{% block content-table-head-row %}
+<th class="text-left">
+    <a href="">Name <i class="fa fa-fw fa-sort"></i></a>
+</th>
+<th class="text-right">
+    <span>DKIM</span>
+</th>
+<th class="text-right">
+    <span>Users</span>
+</th>
+<th class="text-right">
+    <span>Aliases</span>
+</th>
+<th>
+    <span class="sr-only">Actions</span>
+</th>
+{% endblock %}
+{% block content-table-row %}
+<td class="text-left">
+    <span>{{ object.name }}</span>
+</td>
+<td class="text-right">
+    <span>{{ object.dkim_enabled }}</span>
+</td>
+<td class="text-right">
+    <span>{{ object.users.count }}</span>
+</td>
+<td class="text-right">
+    <span>{{ object.aliases.count }}</span>
+</td>
+<td class="actions">
+    <a class="action-edit" href="{% url "mailserveradmin:domain-update" %}">Edit</a>
+    <a class="action-delete text-danger" href="{% url "mailserveradmin:domain-delete" %}">Delete</a>
+</td>
+{% endblock %}
+{% block content-table-empty %}
+<td class="text-left" colspan="5">
+    <span>No domain yet</span>
+</td>
 {% endblock %}
 {# vim: set ft=htmldjango: #}

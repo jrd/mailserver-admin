@@ -1,0 +1,16 @@
+{% extends "mailserveradmin/base_dashboard.html" %}{% load i18n static %}
+{% block content %}
+<div class="content-header">
+    <div class="title">
+        <h1>{{ model_name|capfirst }}</h1>
+    </div>
+    <div class="actions">
+        {% block content-actions %}{% endblock %}
+    </div>
+</div>
+{% block content-extra %}{% endblock %}
+<div class="content-panel">
+    {% block content-panel %}{% endblock %}
+</div>
+{% endblock %}
+{# vim: set ft=htmldjango: #}
