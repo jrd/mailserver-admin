@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def dkim_validator(value):
-    dkim_pattern = compile(r'^[a-z][a-z0-9]{0,49}$')
+    dkim_pattern = compile(r'^[a-z0-9]{0,50}$')
     if not dkim_pattern.match(value):
         raise ValidationError(
             _("%(value)s is not a valid dkim selector, only lower-cased letters and digits are allowed."),
@@ -28,7 +28,7 @@ def username_validator(value):
     user_pattern = compile(r'^[a-z][-_.a-z0-9]+$')
     if not user_pattern.match(value):
         raise ValidationError(
-            _("%(value)s is not a valid user name, only lower-cased letters, digits, dash, underscore or dot are allowed."),
+            _("%(value)s is not valid user, only lower-cased letters, digits, dash, underscore or dot are allowed."),
             params={'value': value},
         )
 
@@ -37,7 +37,7 @@ class MailDomain(models.Model):
     name = models.CharField(max_length=255, unique=True)
     dkim_enabled = models.BooleanField(default=False)
     dkim_selector = models.CharField(max_length=50, null=True, blank=True, validators=[dkim_validator])
-    dkim_private_key = models.CharField(max_length=255, null=True, blank=True)
+    dkim_private_key = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name

@@ -46,19 +46,19 @@
     {% if object_list|length %}
     <div class="list-pagination">
         <div class="list-pagination-counter">
-            <strong>{{ object_list|length }}</strong> results
+            <strong>{{ paginator.count }}</strong> result{{ paginator.count|pluralize }}
         </div>
         <div class="current-page">
-            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}
+            Page {{ page.number|default:1 }} of {{ paginator.num_pages }}
         </div>
         <ul class="pagination">
-            <li class="page-item{% if not object_list.has_previous %} disabled{% endif %}">
-                <a class="page-link" href="?page={{ object_list.previous_page_number }}">
+            <li class="page-item{% if not page.has_previous %} disabled{% endif %}">
+                <a class="page-link" href="?page={{ page.previous_page_number }}">
                     <i class="fa fa-angle-left mx-1"></i> <span class="btn-label">Previous</span>
                 </a>
             </li>
-            <li class="page-item{% if not object_list.has_next %} disabled{% endif %}">
-                <a class="page-link" href="?page={{ object_list.next_page_number }}">
+            <li class="page-item{% if not page.has_next %} disabled{% endif %}">
+                <a class="page-link" href="?page={{ page.next_page_number }}">
                     <span class="btn-label">Next</span> <i class="fa fa-angle-right mx-1"></i>
                 </a>
             </li>

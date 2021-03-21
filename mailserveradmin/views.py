@@ -1,3 +1,5 @@
+from datetime import date
+from Crypto.PublicKey import RSA
 from django.contrib.auth.mixins import LoginRequiredMixin as OrigLoginRequiredMixin
 from django.contrib.auth.views import LoginView as OrigLoginView
 from django.contrib.auth.views import LogoutView  # noqa F401
@@ -55,14 +57,16 @@ def index_view(request):
 # ##############
 
 
-class DomainListView(CommonContextMixin, LoginRequiredMixin, ListView):
+class DomainContextMixin(CommonContextMixin):
+    extra_context = extra_context | {
+        'model_name': 'domain',
+    }
+
+
+class DomainListView(DomainContextMixin, LoginRequiredMixin, ListView):
     model = MailDomain
     paginate_by = 10
     context_object_name = 'domain_list'
-    extra_context = extra_context | {
-        'model_name': 'domain',
-        'title': 'Domains',
-    }
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -72,24 +76,35 @@ class DomainListView(CommonContextMixin, LoginRequiredMixin, ListView):
         return qs
 
 
-class DomainView(LoginRequiredMixin, DetailView):
+class DomainView(DomainContextMixin, LoginRequiredMixin, DetailView):
     model = MailDomain
     context_object_name = 'domain'
 
 
-class DomainCreateView(LoginRequiredMixin, CreateView):
+class DomainCreateView(DomainContextMixin, LoginRequiredMixin, CreateView):
     model = MailDomain
+    template_name_suffix = '_create'
+    success_url = reverse_lazy(f'{app_name}:domain-list')
+    fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
+
+    def get_initial(self):
+        return {
+            'dkim_enabled': True,
+            'dkim_selector': str(date.today().year),
+            'dkim_private_key': RSA.generate(2048).export_key().decode('ascii'),
+        }
+
+
+class DomainUpdateView(DomainContextMixin, LoginRequiredMixin, UpdateView):
+    model = MailDomain
+    template_name_suffix = '_edit'
+    success_url = reverse_lazy(f'{app_name}:domain-list')
     fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
 
 
-class DomainUpdateView(LoginRequiredMixin, UpdateView):
+class DomainDeleteView(DomainContextMixin, LoginRequiredMixin, DeleteView):
     model = MailDomain
-    fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
-
-
-class DomainDeleteView(LoginRequiredMixin, DeleteView):
-    model = MailDomain
-    success_url = reverse_lazy('domain-list')
+    success_url = reverse_lazy(f'{app_name}:domain-list')
 
 
 # ############
@@ -104,9 +119,9 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        # if not self.request.user.is_superadmin:
-        #     assert(self.request.user.is_admin)
-        #     qs = qs.filter(domain=self.request.user.domain)
+        if not self.request.user.is_superadmin:
+            assert(self.request.user.is_admin)
+            qs = qs.filter(domain=self.request.user.domain)
         return qs
 
 
@@ -117,11 +132,13 @@ class UserView(LoginRequiredMixin, DetailView):
 
 class UserCreateView(LoginRequiredMixin, CreateView):
     model = MailUser
+    template_name_suffix = '_create'
     fields = ['name', 'domain', 'is_superuser', 'is_admin', 'send_only', 'quota']
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = MailUser
+    template_name_suffix = '_edit'
     fields = ['name', 'domain', 'is_superuser', 'is_admin', 'send_only', 'quota']
 
 
@@ -142,9 +159,9 @@ class AliasListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        # if not self.request.user.is_superadmin:
-        #     assert(self.request.user.is_admin)
-        #     qs = qs.filter(domain=self.request.user.domain)
+        if not self.request.user.is_superadmin:
+            assert(self.request.user.is_admin)
+            qs = qs.filter(domain=self.request.user.domain)
         return qs
 
 
@@ -155,11 +172,13 @@ class AliasView(LoginRequiredMixin, DetailView):
 
 class AliasCreateView(LoginRequiredMixin, CreateView):
     model = MailAlias
+    template_name_suffix = '_create'
     fields = ['name', 'domain', 'destination']
 
 
 class AliasUpdateView(LoginRequiredMixin, UpdateView):
     model = MailAlias
+    template_name_suffix = '_edit'
     fields = ['name', 'domain', 'destination']
 
 

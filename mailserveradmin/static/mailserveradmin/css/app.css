@@ -384,3 +384,100 @@ div.content-search input[type="search"].form-control {
     min-width: 100%;
 }
 /* END CRUD HEADER */
+/* LIST */
+.content-panel {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-lg);
+    margin-bottom: 20px;
+}
+.content-panel-body {
+    min-height: 250px;
+    background: var(--white);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+.content-panel-body table {
+    width: 100%;
+    background: var(--white);
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 0;
+}
+.content-panel-body table > thead {
+    background: var(--table-header-bg);
+}
+.content-panel-body th {
+    vertical-align: bottom;
+    border: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+.content-panel-body thead a,
+.content-panel-body thead span {
+    display: block;
+    color: var(--text-color-dark);
+    font-weight: 500;
+    line-height: 1.357;
+    padding: 12px 8px;
+    white-space: nowrap;
+}
+.content-panel-body td {
+    padding: 8px;
+    border-top: 1px solid #dee2e6;
+    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    vertical-align: middle;
+}
+.content-panel-body th:first-child > a,
+.content-panel-body th:first-child > span,
+.content-panel-body td:first-child {
+    padding-left: 20px;
+}
+.content-panel-body th:last-child > a,
+.content-panel-body th:last-child > span,
+.content-panel-body td:last-child {
+    padding-right: 20px;
+}
+.content-panel-body th.text-left,
+.content-panel-body td.text-left {
+    text-align: left;
+}
+.content-panel-body th.text-center,
+.content-panel-body td.text-center {
+    text-align: center;
+}
+.content-panel-body th.text-right,
+.content-panel-body td.text-right {
+    text-align: right;
+}
+.content-panel-body td.actions {
+    display: flex;
+    justify-content: right;
+}
+.content-panel-body td.actions > * {
+    margin-left: 10px;
+}
+.content-panel-footer {
+    background: var(--table-footer-bg);
+    border-top: 0;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    margin: 0;
+    padding: 0;
+}
+.list-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px;
+}
+.list-pagination ul.pagination {
+    margin: 0;
+}
+/* END LIST */
+/* CREATE/EDIT */
+form.create,
+form.edit {
+    padding: 10px;
+}
+/* END CREATE/EDIT */

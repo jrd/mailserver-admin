@@ -18,7 +18,7 @@
 {% endblock %}
 {% block content-table-row %}
 <td class="text-left">
-    <span>{{ object.name }}</span>
+    <a class="action-detail" href="{% url "mailserveradmin:domain-detail" object.pk %}">{{ object.name }}</a>
 </td>
 <td class="text-right">
     <span>{{ object.dkim_enabled }}</span>
@@ -30,8 +30,8 @@
     <span>{{ object.aliases.count }}</span>
 </td>
 <td class="actions">
-    <a class="action-edit" href="{% url "mailserveradmin:domain-update" %}">Edit</a>
-    <a class="action-delete text-danger" href="{% url "mailserveradmin:domain-delete" %}">Delete</a>
+    <a class="action-edit" href="{% url "mailserveradmin:domain-update" object.pk %}">Edit</a>
+    <a class="action-delete text-danger" href="{% url "mailserveradmin:domain-delete" object.pk %}">Delete</a>
 </td>
 {% endblock %}
 {% block content-table-empty %}
