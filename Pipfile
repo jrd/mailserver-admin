@@ -29,6 +29,8 @@ mysqlclient = "~=2.0"
 psycopg2-binary = "~=2.8"
 # for DKIM RSA keys
 pycryptodome = "~=3.0"
+# to check DNS records
+dnspython = "~=1.0"
 # needed in non-dev-packages because it’s listing in application list.
 # This is not active unless DEBUG is True
 django-debug-toolbar = "~=3.0"

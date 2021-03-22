@@ -119,7 +119,7 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if not self.request.user.is_superadmin:
+        if not self.request.user.is_superuser:
             assert(self.request.user.is_admin)
             qs = qs.filter(domain=self.request.user.domain)
         return qs
@@ -159,7 +159,7 @@ class AliasListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if not self.request.user.is_superadmin:
+        if not self.request.user.is_superuser:
             assert(self.request.user.is_admin)
             qs = qs.filter(domain=self.request.user.domain)
         return qs

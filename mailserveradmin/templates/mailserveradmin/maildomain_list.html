@@ -4,7 +4,10 @@
     <a href="">Name <i class="fa fa-fw fa-sort"></i></a>
 </th>
 <th class="text-right">
-    <span>DKIM</span>
+    <span>DKIM used</span>
+</th>
+<th class="text-right">
+    <span>DKIM valid</span>
 </th>
 <th class="text-right">
     <span>Users</span>
@@ -24,6 +27,9 @@
     <span>{{ object.dkim_enabled }}</span>
 </td>
 <td class="text-right">
+    <span>{{ object.dkim_validated }}</span>
+</td>
+<td class="text-right">
     <span>{{ object.users.count }}</span>
 </td>
 <td class="text-right">
@@ -35,7 +41,7 @@
 </td>
 {% endblock %}
 {% block content-table-empty %}
-<td class="text-left" colspan="5">
+<td class="text-left" colspan="6">
     <span>No domain yet</span>
 </td>
 {% endblock %}

@@ -1,2 +1,16 @@
 {% extends "mailserveradmin/base_create.html" %}{% load i18n static %}
+{% block form-extra %}
+[Generate new private key]<br>
+Here is entry you should add to you DNS records:<br>
+mail._domainkey 300 IN TXT "v=DKIM1; h=sha256; t=s; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC"<br>
+    "AQEAuzHknF8WDR0Ft/cgQpd8Cowhy6IQDqxfeQzN"<br>
+    "PdLSU73G29sFs34WJhDzX89PFuVfm/DQq2PO5hs/"<br>
+    "JAIsFEcQANyoJdt3n3jDFL03kqBPOxyr4syZWfp4"<br>
+    "lEZpbIdlxX7orEScahjDdTZoNwVVRnDjr+13xcOs"<br>
+    "dzZaZuIH0u2PioVMs5/AFqNkXpQMkIxEk3I15yYC"<br>
+    "aSRklRVTqu1gEq1MWsPWK2T/SGfFAS1r822n0RSa"<br>
+    "5LMxAacyTWdocYGvOiCE9+Dt8OvifQjR8m8hyzFF"<br>
+    "R4AgwV4s4J4lxvXL/LizR01cTbyaJsIL+XSsC5jF"<br>
+    "XD/4RJlAi6zOZLIbdMs2zhAF6wIDAQAB"<br>
+{% endblock %}
 {# vim: set ft=htmldjango: #}

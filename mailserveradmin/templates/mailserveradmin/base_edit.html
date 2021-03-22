@@ -9,6 +9,7 @@
 <form method="post" id="{{ model_name|add:"_form" }}" class="edit">
     {% csrf_token %}
     {{ form.as_p }}
+    {% block form-extra %}{% endblock %}
 </form>
 {% endblock %}
 {# vim: set ft=htmldjango: #}

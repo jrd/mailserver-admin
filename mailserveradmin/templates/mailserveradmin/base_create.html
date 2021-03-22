@@ -13,6 +13,7 @@
     {% csrf_token %}
     <input type="hidden" name="again" value="0">
     {{ form.as_p }}
+    {% block form-extra %}{% endblock %}
 </form>
 {% endblock %}
 {# vim: set ft=htmldjango: #}
