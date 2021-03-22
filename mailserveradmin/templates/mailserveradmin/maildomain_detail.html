@@ -1,0 +1,8 @@
+{% extends "mailserveradmin/base_detail.html" %}{% load i18n static %}
+{% block detail-extra %}
+<div class="dkim-dns-record">
+    <span>Here is the entry you should add to you DNS records:</span>
+    <pre id="dns-record">{{ dns_record }}</pre>
+</div>
+{% endblock %}
+{# vim: set ft=htmldjango: #}

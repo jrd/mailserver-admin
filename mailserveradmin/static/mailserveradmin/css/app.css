@@ -489,5 +489,48 @@ form.edit {
 #dns-record {
     margin: 0 20px;
     color: var(--color-info);
+    font-family: monospace;
+    white-space: pre;
 }
 /* END CREATE/EDIT */
+/* DETAIL */
+div.detail {
+    padding: 0.5rem 1rem;
+}
+p.detail-field {
+    margin: 0 0 0.5rem 0;
+}
+span.detail-field-name {
+    font-weight: 600;
+}
+span.detail-field-value {
+    padding-left: 0.5rem;
+}
+span.detail-field-value.int {
+    font-weight: 400;
+}
+span.detail-field-value.bool {
+    display: inline-block;
+    visibility: hidden;
+    font-size: 1px;
+}
+span.detail-field-value.bool::after {
+    display: inline-block;
+    visibility: visible;
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+}
+span.detail-field-value.bool[data-value="False"]::after {
+    background-color: var(--red);
+}
+span.detail-field-value.bool[data-value="True"]::after {
+    background-color: var(--green);
+}
+span.detail-field-value.textarea {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+}
+/* END DETAIL */

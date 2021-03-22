@@ -1,19 +1,20 @@
 from datetime import date
 from json import loads
 from math import ceil
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 from Crypto.PublicKey import RSA
 from django.contrib.auth.mixins import LoginRequiredMixin as OrigLoginRequiredMixin
 from django.contrib.auth.views import LoginView as OrigLoginView
 from django.contrib.auth.views import LogoutView  # noqa F401
+from django.db.models import fields as model_fields
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import (
     reverse,
     reverse_lazy,
 )
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (
     DetailView,
     ListView,
@@ -47,6 +48,33 @@ extra_context = {
 
 class CommonContextMixin(ContextMixin):
     extra_context = extra_context
+
+
+class FieldsContextMixin():
+    field_types = {
+        model_fields.IntegerField: 'int',
+        model_fields.BooleanField: 'bool',
+        model_fields.TextField: 'textarea',
+        model_fields.CharField: 'str',
+    }
+
+    def _get_simple_type(self, field):
+        for field_type, simple_type in self.field_types.items():
+            if isinstance(field, field_type):
+                return simple_type
+        else:
+            return 'str'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        if hasattr(self, 'fields'):
+            fields = [f for f in self.model._meta.get_fields() if f.name in self.fields]
+        else:
+            fields = [f for f in self.model._meta.get_fields() if not f.is_relation]
+        fields = {field.name: (getattr(ctx['object'], field.name), self._get_simple_type(field)) for field in fields}
+        return ctx | {
+            'fields': fields,
+        }
 
 
 class LoginView(CommonContextMixin, OrigLoginView):
@@ -115,9 +143,19 @@ class DomainListView(DomainContextMixin, LoginRequiredMixin, ListView):
         return qs
 
 
-class DomainView(DomainContextMixin, LoginRequiredMixin, DetailView):
+class DomainView(DomainContextMixin, FieldsContextMixin, LoginRequiredMixin, DetailView):
     model = MailDomain
     context_object_name = 'domain'
+    fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        selector = ctx['object'].dkim_selector
+        private_key_pem = ctx['object'].dkim_private_key
+        dns_record = DkimDnsRecordView.get_dns_record(selector, private_key_pem)
+        return ctx | {
+            'dns_record': dns_record,
+        }
 
 
 class DomainCreateView(DomainContextMixin, LoginRequiredMixin, CreateView):
