@@ -6,8 +6,9 @@ from hmac import compare_digest as compare_hash
 from re import compile
 
 from django.contrib.auth.models import (
-    AbstractUser,
+    AbstractBaseUser,
     BaseUserManager,
+    PermissionsMixin,
 )
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -78,7 +79,7 @@ class MailUserManager(BaseUserManager):
         return user
 
 
-class MailUser(AbstractUser):
+class MailUser(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255, validators=[username_validator])
     password = models.CharField(max_length=255, help_text="encrypted password")
     is_superuser = models.BooleanField(default=False, db_column='superadmin', help_text="admin for all domains")
@@ -108,10 +109,16 @@ class MailUser(AbstractUser):
     def is_domain_admin(self):
         return self.is_superuser or self.is_admin
 
+    def clean(self):
+        self.name = self.normalize_username(self.name)
+
     def get_username(self):
         return self.email
 
     def get_full_name(self):
+        return self.email
+
+    def get_short_name(self):
         return self.email
 
     def set_password(self, raw_password):
