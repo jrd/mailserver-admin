@@ -1,2 +1,20 @@
 {% extends "mailserveradmin/base_edit.html" %}{% load i18n static %}
+{% block form-extra %}
+<div class="new-private-key">
+    <a class="action-new-priv-key btn btn-info" href="" onclick="getNewPrivateKey('{{ form.dkim_private_key.auto_id }}'); return false;">Generate new private key</a>
+</div>
+<div class="dkim-dns-record">
+    <span>Here is the entry you should add to you DNS records:</span>
+    <pre id="dns-record">{{ dns_record }}</pre>
+</div>
+<script>
+window.addEventListener('load', (event) => {
+    listenForSelectorOrPrivateKeyChange(
+        '{{ form.dkim_selector.auto_id }}',
+        '{{ form.dkim_private_key.auto_id }}',
+        'dns-record',
+    );
+});
+</script>
+{% endblock %}
 {# vim: set ft=htmldjango: #}

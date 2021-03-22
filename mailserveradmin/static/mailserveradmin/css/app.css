@@ -132,7 +132,7 @@ body.login footer {
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
 }
-/* END LOGIN */
+/* END LOGIN */
 /* NAVBAR */
 .navbar {
     display: flex;
@@ -163,7 +163,7 @@ body.login footer {
 #header-logo a {
     color: var(--text-color);
 }
-/* END NAVBAR */
+/* END NAVBAR */
 /* SIDEBAR */
 main.grid {
     display: grid;
@@ -383,7 +383,7 @@ div.content-search input[type="search"].form-control {
     padding-left: 32px;
     min-width: 100%;
 }
-/* END CRUD HEADER */
+/* END CRUD HEADER */
 /* LIST */
 .content-panel {
     background: var(--white);
@@ -474,10 +474,20 @@ div.content-search input[type="search"].form-control {
 .list-pagination ul.pagination {
     margin: 0;
 }
-/* END LIST */
+/* END LIST */
 /* CREATE/EDIT */
 form.create,
 form.edit {
     padding: 10px;
 }
-/* END CREATE/EDIT */
+.new-private-key {
+    margin: 0 20px;
+}
+.dkim-dns-record {
+    margin: 1rem 20px 0;
+}
+#dns-record {
+    margin: 0 20px;
+    color: var(--color-info);
+}
+/* END CREATE/EDIT */
