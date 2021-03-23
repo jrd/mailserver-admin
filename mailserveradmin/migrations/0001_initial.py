@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True)),
                 ('dkim_enabled', models.BooleanField(default=False)),
-                ('dkim_selector', models.CharField(blank=True, max_length=50, null=True, validators=[mailserveradmin.models.dkim_validator])),
+                ('dkim_selector', models.CharField(blank=True, max_length=50, null=True, validators=[mailserveradmin.models.domain.dkim_validator])),
                 ('dkim_private_key', models.TextField(blank=True, null=True)),
             ],
             options={
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
             name='MailAlias',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, validators=[mailserveradmin.models.username_validator])),
+                ('name', models.CharField(max_length=255, validators=[mailserveradmin.models.common.username_validator])),
                 ('destination', models.EmailField(max_length=254)),
                 ('domain', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='aliases', to='mailserveradmin.maildomain')),
             ],
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('name', models.CharField(max_length=255, validators=[mailserveradmin.models.username_validator])),
+                ('name', models.CharField(max_length=255, validators=[mailserveradmin.models.common.username_validator])),
                 ('password', models.CharField(help_text='encrypted password', max_length=255)),
                 ('is_superuser', models.BooleanField(db_column='superadmin', default=False, help_text='admin for all domains')),
                 ('is_admin', models.BooleanField(db_column='admin', default=False, help_text='admin for its domain')),
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 'ordering': ['name', 'domain__name'],
             },
             managers=[
-                ('objects', mailserveradmin.models.MailUserManager()),
+                ('objects', mailserveradmin.models.user.MailUserManager()),
             ],
         ),
         migrations.AddConstraint(
