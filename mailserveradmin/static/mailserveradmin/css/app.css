@@ -535,3 +535,14 @@ span.detail-field-value.textarea {
     white-space: pre;
 }
 /* END DETAIL */
+/* DELETE */
+form.delete {
+    padding: 10px;
+}
+.confirm {
+    margin: 20px;
+    padding: 10px;
+    background-color: var(--color-danger);
+    color: var(--white);
+}
+/* END DELETE */
