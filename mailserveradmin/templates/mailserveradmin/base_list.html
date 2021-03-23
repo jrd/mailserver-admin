@@ -5,15 +5,24 @@
 {% block content-extra %}
 <div class="content-search">
     <div class="form-action form-action-search">
-        <form method="get">
+        <form method="get" id="search-form">
             <div class="form-group">
                 <div class="form-widget">
-                    <input class="form-control" type="search" name="query" value="" placeholder="Search">
+                    <input class="form-control" type="search" name="query" id="search-input"
+                           value="{{ request.GET.query }}" placeholder="Search" autocomplete="off">
                 </div>
             </div>
         </form>
     </div>
 </div>
+<script>
+window.addEventListener('load', (event) => {
+    initSearchByKeyPressEvent(
+        'search-form',
+        'search-input',
+    );
+});
+</script>
 {% endblock %}
 {% block content-panel %}
 <div class="content-panel-body">

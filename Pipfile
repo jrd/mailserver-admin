@@ -17,8 +17,6 @@ watchdog = "*"
 django = "~=3.1"
 # More commands for Django
 django-extensions = "~=3.1"
-# Allow filter queryset based on model fields
-django-filter = "~=2.4"
 # Fontawesome (free version)
 fontawesome-free = "~=5.14"
 # Boostrap 4

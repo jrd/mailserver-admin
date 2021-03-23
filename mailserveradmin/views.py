@@ -6,6 +6,7 @@ from Crypto.PublicKey import RSA
 from django.contrib.auth.mixins import LoginRequiredMixin as OrigLoginRequiredMixin
 from django.contrib.auth.views import LoginView as OrigLoginView
 from django.contrib.auth.views import LogoutView  # noqa F401
+from django.db.models import Q
 from django.db.models import fields as model_fields
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -140,6 +141,9 @@ class DomainListView(DomainContextMixin, LoginRequiredMixin, ListView):
         if not self.request.user.is_superuser:
             assert(self.request.user.is_admin)
             qs = qs.filter(id=self.request.user.domain_id)
+        search_query = self.request.GET.get('query', '').strip()
+        if search_query:
+            qs = qs.filter(name__icontains=search_query)
         return qs
 
 
@@ -213,6 +217,12 @@ class UserListView(LoginRequiredMixin, ListView):
         if not self.request.user.is_superuser:
             assert(self.request.user.is_admin)
             qs = qs.filter(domain=self.request.user.domain)
+        search_query = self.request.GET.get('query', '').strip()
+        if search_query:
+            qs = qs.filter(
+                Q(name__icontains=search_query)
+                | Q(domain__icontains=search_query)
+            )
         return qs
 
 
@@ -253,6 +263,13 @@ class AliasListView(LoginRequiredMixin, ListView):
         if not self.request.user.is_superuser:
             assert(self.request.user.is_admin)
             qs = qs.filter(domain=self.request.user.domain)
+        search_query = self.request.GET.get('query', '').strip()
+        if search_query:
+            qs = qs.filter(
+                Q(name__icontains=search_query)
+                | Q(domain__icontains=search_query)
+                | Q(destination__icontains=search_query)
+            )
         return qs
 
 

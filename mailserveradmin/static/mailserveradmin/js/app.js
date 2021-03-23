@@ -32,6 +32,22 @@ function initSidebarToggleEvent() {
   }
 }
 
+function initSearchByKeyPressEvent(formElementId, formInputId) {
+  const formElement = document.getElementById(formElementId);
+  const formInput = document.getElementById(formInputId);
+  if (formElement && formInput) {
+    let timeoutId = null;
+    formInput.addEventListener('keyup', function(event) {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(function() {
+        formElement.submit();
+      }, 500);
+    });
+  }
+}
+
 function getNewPrivateKey(privateKeyElementId) {
   const privateKeyElement = document.getElementById(privateKeyElementId);
   fetch('/get_new_private_key')
