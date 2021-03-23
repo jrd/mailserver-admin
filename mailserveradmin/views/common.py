@@ -42,7 +42,7 @@ class FieldsContextMixin():
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         if hasattr(self, 'fields'):
-            fields = [f for f in self.model._meta.get_fields() if f.name in self.fields]
+            fields = [self.model._meta.get_field(field_name) for field_name in self.fields]
         else:
             fields = [f for f in self.model._meta.get_fields() if not f.is_relation]
         fields = {field.name: (getattr(ctx['object'], field.name), self._get_simple_type(field)) for field in fields}
