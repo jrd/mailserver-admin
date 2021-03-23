@@ -4,5 +4,17 @@
     <span>Here is the entry you should add to you DNS records:</span>
     <pre id="dns-record">{{ dns_record }}</pre>
 </div>
+<p class="detail-field">
+    <span class="detail-field-name">Dkim valid</span>
+    <span class="detail-field-value bool" data-value="{{ domain.dkim_validated }}">{{ domain.dkim_validated }}</span>
+</p>
+<p class="detail-field">
+    <span class="detail-field-name">Users</span>
+    <span class="detail-field-value int">{{ domain.users.count }}</span>
+</p>
+<p class="detail-field">
+    <span class="detail-field-name">Aliases</span>
+    <span class="detail-field-value int">{{ domain.aliases.count }}</span>
+</p>
 {% endblock %}
 {# vim: set ft=htmldjango: #}
