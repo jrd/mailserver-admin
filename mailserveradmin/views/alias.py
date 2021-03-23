@@ -28,7 +28,7 @@ class AliasListView(LoginRequiredMixin, ListView):
         if search_query:
             qs = qs.filter(
                 Q(name__icontains=search_query)
-                | Q(domain__icontains=search_query)
+                | Q(domain__name__icontains=search_query)
                 | Q(destination__icontains=search_query)
             )
         return qs

@@ -10,11 +10,22 @@ from django.views.generic.edit import (
     UpdateView,
 )
 
-from .common import LoginRequiredMixin
+from .common import (
+    CommonContextMixin,
+    FieldsContextMixin,
+    LoginRequiredMixin,
+)
+from .. import app_name
 from ..models import MailUser
 
 
-class UserListView(LoginRequiredMixin, ListView):
+class UserContextMixin(CommonContextMixin):
+    extra_context = CommonContextMixin.extra_context | {
+        'model_name': 'user',
+    }
+
+
+class UserListView(UserContextMixin, LoginRequiredMixin, ListView):
     model = MailUser
     paginate_by = 50
     context_object_name = 'user_list'
@@ -28,28 +39,28 @@ class UserListView(LoginRequiredMixin, ListView):
         if search_query:
             qs = qs.filter(
                 Q(name__icontains=search_query)
-                | Q(domain__icontains=search_query)
+                | Q(domain__name__icontains=search_query)
             )
         return qs
 
 
-class UserView(LoginRequiredMixin, DetailView):
+class UserView(UserContextMixin, FieldsContextMixin, LoginRequiredMixin, DetailView):
     model = MailUser
     context_object_name = 'user'
+    fields = ['name', 'domain', 'is_active', 'is_admin', 'is_superuser', 'send_only', 'quota']
 
 
-class UserCreateView(LoginRequiredMixin, CreateView):
+class UserCreateView(UserContextMixin, LoginRequiredMixin, CreateView):
     model = MailUser
     template_name_suffix = '_create'
-    fields = ['name', 'domain', 'is_superuser', 'is_admin', 'send_only', 'quota']
+    success_url = reverse_lazy(f'{app_name}:user-list')
+    fields = ['name', 'domain', 'is_active', 'is_admin', 'is_superuser', 'send_only', 'quota']
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-    model = MailUser
+class UserUpdateView(UserCreateView, UpdateView):
     template_name_suffix = '_edit'
-    fields = ['name', 'domain', 'is_superuser', 'is_admin', 'send_only', 'quota']
 
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+class UserDeleteView(UserContextMixin, LoginRequiredMixin, DeleteView):
     model = MailUser
-    success_url = reverse_lazy('user-list')
+    success_url = reverse_lazy(f'{app_name}:user-list')
