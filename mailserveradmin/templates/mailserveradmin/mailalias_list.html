@@ -1,2 +1,30 @@
-{% extends "mailserveradmin/base_bashboard.html" %}{% load i18n static %}
+{% extends "mailserveradmin/base_list.html" %}{% load i18n static %}
+{% block content-table-head-row %}
+<th class="text-left">
+    <a href="">Source <i class="fa fa-fw fa-sort"></i></a>
+</th>
+<th class="text-left">
+    <span>Destination</span>
+</th>
+<th>
+    <span class="sr-only">Actions</span>
+</th>
+{% endblock %}
+{% block content-table-row %}
+<td class="text-left">
+    <a class="action-detail" href="{% url "mailserveradmin:alias-detail" object.pk %}">{{ object.source }}</a>
+</td>
+<td class="text-left">
+    <span>{{ object.destination }}</span>
+</td>
+<td class="actions">
+    <a class="action-edit" href="{% url "mailserveradmin:alias-update" object.pk %}">Edit</a>
+    <a class="action-delete text-danger" href="{% url "mailserveradmin:alias-delete" object.pk %}">Delete</a>
+</td>
+{% endblock %}
+{% block content-table-empty %}
+<td class="text-left" colspan="3">
+    <span>No alias yet</span>
+</td>
+{% endblock %}
 {# vim: set ft=htmldjango: #}

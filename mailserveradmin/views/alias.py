@@ -10,11 +10,22 @@ from django.views.generic.edit import (
     UpdateView,
 )
 
-from .common import LoginRequiredMixin
+from .common import (
+    CommonContextMixin,
+    FieldsContextMixin,
+    LoginRequiredMixin,
+)
+from .. import app_name
 from ..models import MailAlias
 
 
-class AliasListView(LoginRequiredMixin, ListView):
+class AliasContextMixin(CommonContextMixin):
+    extra_context = CommonContextMixin.extra_context | {
+        'model_name': 'alias',
+    }
+
+
+class AliasListView(AliasContextMixin, LoginRequiredMixin, ListView):
     model = MailAlias
     paginate_by = 50
     context_object_name = 'alias_list'
@@ -34,23 +45,23 @@ class AliasListView(LoginRequiredMixin, ListView):
         return qs
 
 
-class AliasView(LoginRequiredMixin, DetailView):
+class AliasView(AliasContextMixin, FieldsContextMixin, LoginRequiredMixin, DetailView):
     model = MailAlias
     context_object_name = 'alias'
+    fields = ['name', 'domain', 'destination']
 
 
-class AliasCreateView(LoginRequiredMixin, CreateView):
+class AliasCreateView(AliasContextMixin, LoginRequiredMixin, CreateView):
     model = MailAlias
     template_name_suffix = '_create'
+    success_url = reverse_lazy(f'{app_name}:alias-list')
     fields = ['name', 'domain', 'destination']
 
 
-class AliasUpdateView(LoginRequiredMixin, UpdateView):
-    model = MailAlias
+class AliasUpdateView(AliasCreateView, UpdateView):
     template_name_suffix = '_edit'
-    fields = ['name', 'domain', 'destination']
 
 
-class AliasDeleteView(LoginRequiredMixin, DeleteView):
+class AliasDeleteView(AliasContextMixin, LoginRequiredMixin, DeleteView):
     model = MailAlias
-    success_url = reverse_lazy('alias-list')
+    success_url = reverse_lazy(f'{app_name}:alias-list')

@@ -9,8 +9,12 @@ class MailAlias(models.Model):
     domain = models.ForeignKey('MailDomain', on_delete=models.CASCADE, related_name="aliases")
     destination = models.EmailField()
 
+    @property
+    def source(self):
+        return f"{self.name}@{self.domain.name}"
+
     def __str__(self):
-        return f"{self.name}@{self.domain__name} → {self.destination}"
+        return f"{self.source} → {self.destination}"
 
     def get_absolute_url(self):
         return reverse('alias-detail', kwargs={'pk': self.pk})
