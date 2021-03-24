@@ -17,7 +17,7 @@
 {% include "./column_data.html" with data=object.is_superuser align="right" type="bool" %}
 {% include "./column_data.html" with data=object.send_only align="right" type="bool" %}
 {% if object.quota %}
-{% include "./column_data.html" with data=object.quota|stringformat:'s'|add:' MB' align="right" %}
+{% include "./column_data.html" with data=object.quota|stringformat:'s'|add:' MB' align="right" type="num" %}
 {% else %}
 {% include "./column_data.html" with data='−' align="right" %}
 {% endif %}

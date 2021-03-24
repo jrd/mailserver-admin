@@ -84,6 +84,7 @@ a:hover {
 #wrapper {
     max-width: var(--body-max-width);
     padding: 15px;
+    margin: 0 auto;
 }
 header {
     display: flex;
@@ -187,7 +188,7 @@ main.grid {
     top: 0;
     left: calc(-40px - var(--sidebar-max-width));
     transition: left .3s;
-    padding: 15px 20px;
+    padding: 20px;
     overflow: auto;
     resize: horizontal;
     z-index: 1500;
@@ -233,6 +234,8 @@ body.sidebar-visible #navigation-toggler2 {
 }
 ul.sidebar {
     padding-left: 0;
+    margin-top: 10px;
+    margin-right: 20px;
 }
 ul.sidebar > li {
     list-style: none;
