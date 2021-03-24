@@ -1,4 +1,4 @@
-{% if type == 'actions' %}
+{% spaceless %}{% if type == 'actions' %}
 <th class="text-right">
     <span class="sr-only">Actions</span>
 </th>
@@ -14,4 +14,4 @@
     {% endif %}
 </th>
 {% endif %}
-{# vim: set ft=htmldjango: #}
+{# vim: set ft=htmldjango: #}{% endspaceless %}

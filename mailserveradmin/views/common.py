@@ -26,7 +26,7 @@ class CommonContextMixin(ContextMixin):
 
 class FieldsContextMixin():
     field_types = {
-        model_fields.IntegerField: 'int',
+        model_fields.IntegerField: 'num',
         model_fields.BooleanField: 'bool',
         model_fields.TextField: 'textarea',
         model_fields.CharField: 'str',

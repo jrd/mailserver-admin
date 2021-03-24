@@ -1,0 +1,13 @@
+{% spaceless %}<p class="detail-field">
+    <span class="detail-field-name">{{ field_name|capfirst }}</span>
+    <span class="detail-field-value {{ field_type }}">
+        {% if field_type == 'bool' %}
+        <span data-value="{{ field_value|yesno:'yes,no' }}">
+            <span>{{ field_value }}</span>
+        </span>
+        {% else %}
+        <span>{{ field_value }}</span>
+        {% endif %}
+    </span>
+</p>
+{# vim: set ft=htmldjango: #}{% endspaceless %}

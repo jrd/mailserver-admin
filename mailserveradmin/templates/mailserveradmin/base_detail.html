@@ -7,18 +7,7 @@
 {% block content-panel %}
 <div class="detail">
     {% for field_name, field_value_type in fields.items %}
-    <p class="detail-field">
-        <span class="detail-field-name">{{ field_name|capfirst }}</span>
-        <span class="detail-field-value {{ field_value_type.1 }}">
-            {% if field_value_type.1 == 'bool' %}
-            <span data-value="{{ field_value_type.0|yesno:'yes,no' }}">
-                <span>{{ field_value_type.0 }}</span>
-            </span>
-            {% else %}
-            <span>{{ field_value_type.0 }}</span>
-            {% endif %}
-        </span>
-    </p>
+    {% include "./field_detail.html" with field_type=field_value_type.1 field_value=field_value_type.0 %}
     {% endfor %}
     {% block detail-extra %}{% endblock %}
 </div>

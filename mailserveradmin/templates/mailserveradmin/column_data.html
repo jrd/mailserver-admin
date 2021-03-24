@@ -1,4 +1,4 @@
-{% if type == 'actions' %}
+{% spaceless %}{% if type == 'actions' %}
 <td class="actions">
     <a class="action-edit" href="{% url edit_url_base object.pk %}">Edit</a>
     <a class="action-delete text-danger" href="{% url delete_url_base object.pk %}">Delete</a>
@@ -16,4 +16,4 @@
     {% endif %}
 </td>
 {% endif %}
-{# vim: set ft=htmldjango: #}
+{# vim: set ft=htmldjango: #}{% endspaceless %}

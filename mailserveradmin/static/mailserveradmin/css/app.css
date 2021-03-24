@@ -391,6 +391,7 @@ div.content-search input[type="search"].form-control {
 .num > span {
     font-weight: 400;
     color: var(--cyan);
+    font-family: var(--font-family-monospace);
 }
 .bool > span > span {
     display: none;
@@ -536,7 +537,7 @@ form.edit {
 #dns-record {
     margin: 0 20px;
     color: var(--color-info);
-    font-family: monospace;
+    font-family: var(--font-family-monospace);
     white-space: pre;
 }
 /* END CREATE/EDIT */
@@ -555,7 +556,7 @@ span.detail-field-value {
 }
 span.detail-field-value.textarea {
     display: block;
-    font-family: monospace;
+    font-family: var(--font-family-monospace);
     white-space: pre;
 }
 /* END DETAIL */
