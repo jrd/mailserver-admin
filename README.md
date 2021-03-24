@@ -1,9 +1,11 @@
 mailserver-admin
 ================
 
-To be used with [Jeffrey Boehm’s mail server](https://github.com/jeboehm/docker-mailserver).
+This application manages *domains*, *users* and *aliases* of a mail server.
 
-It’s a complete rewrite of [PHP mailserver-admin application](https://github.com/jeboehm/mailserver-admin) but in Django and with some additional features.
+This has been tested with **dovecot**, using either mysql or postgresql database.
+
+The main goal was to enhance/replace [Jeffrey Boehm’s PHP mailserver-admin application](https://github.com/jeboehm/mailserver-admin) because I didn’t want to have a mail server administration application in PHP and I wanted to have administration account per domain.
 
 Environment variables
 ---------------------
@@ -19,3 +21,18 @@ Environment variables
 - `DJANGO_DB_NAME`: database name, default to `mailserver`.
 - `DJANGO_DB_USER`: database user, default to `mailserver`.
 - `DJANGO_DB_PASSWORD`: database password, default to `changeme`.
+
+Installation
+------------
+
+Define the required environment variables then:
+
+```sh
+pipenv run ./manage.py migrate
+pipenv run ./manage.py createsuperuser
+pipenv run ./manage.py collectstatic
+```
+
+You can now server the application using any **WSGI** server pointing to the `config/wsgi.py` or `config/asgi.py` file.
+
+Alternatively, you can test the application with `pipenv run ./manage.py runserver_plus` but this should only be used for testing/development.
