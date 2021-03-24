@@ -70,7 +70,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'fontawesome-free',
-    'bootstrap4',
     'mailserveradmin',
 ]
 

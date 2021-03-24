@@ -22,8 +22,25 @@ Environment variables
 - `DJANGO_DB_USER`: database user, default to `mailserver`.
 - `DJANGO_DB_PASSWORD`: database password, default to `changeme`.
 
+VirtualEnv and Dependencies
+---------------------------
+
+Use:
+
+```sh
+pipenv sync
+```
+
+To install dependencies. 
+
 Installation
 ------------
+
+You should also install a database driver,  either `mysqlclient` or `psycopg2-binary`:
+
+```sh
+pipenv run pip install mysqlclient
+```
 
 Define the required environment variables then:
 
@@ -33,6 +50,6 @@ pipenv run ./manage.py createsuperuser
 pipenv run ./manage.py collectstatic
 ```
 
-You can now server the application using any **WSGI** server pointing to the `config/wsgi.py` or `config/asgi.py` file.
+You can now server the application using any **WSGI** server pointing to the `config/wsgi.py` or `config/asgi.py` file. Don’t forget to also serve `favicon.ico` file and `static/` folder.
 
 Alternatively, you can test the application with `pipenv run ./manage.py runserver_plus` but this should only be used for testing/development.

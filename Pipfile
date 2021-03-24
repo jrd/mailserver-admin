@@ -12,6 +12,10 @@ flake8-todo = "*"
 werkzeug = "*"
 # Better than polling for werkzeug
 watchdog = "*"
+# Mysql/Mariadb driver
+mysqlclient = "~=2.0"
+# Postgresql driver
+psycopg2-binary = "~=2.8"
 
 [packages]
 django = "~=3.1"
@@ -19,12 +23,6 @@ django = "~=3.1"
 django-extensions = "~=3.1"
 # Fontawesome (free version)
 fontawesome-free = "~=5.14"
-# Boostrap 4
-django-bootstrap4 = "~=2.0"
-# Mysql/Mariadb driver
-mysqlclient = "~=2.0"
-# Postgresql driver
-psycopg2-binary = "~=2.8"
 # for DKIM RSA keys
 pycryptodome = "~=3.0"
 # to check DNS records

@@ -1,5 +1,5 @@
-{% load i18n static bootstrap4 %}<!DOCTYPE html>
-{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<!DOCTYPE html>{% spaceless %}
+{% load i18n static %}{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}{% endspaceless %}
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
     <title>{% block title %}{% endblock %}</title>
@@ -9,8 +9,7 @@
     {% block blockviewport %}<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">{% endblock %}
     {% block blockfavicon %}<link rel="shortcut icon" href="/favicon.ico">{% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static "fontawesome_free/css/all.min.css" %}">
-    {% bootstrap_css %}
-    {% bootstrap_javascript jquery="full" %}
+    <link rel="stylesheet" type="text/css" href="{% static "mailserveradmin/css/bootstrap.css" %}">
     <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "mailserveradmin/css/app.css" %}{% endblock %}">
     <script type="text/javascript" src="{% block javascript %}{% static "mailserveradmin/js/app.js" %}{% endblock %}"></script>
     {% block extrastyle %}{% endblock %}
@@ -43,5 +42,5 @@
     {% endblock %}
 </div>
 </body>
-</html>
-{# vim: set ft=htmldjango: #}
+</html>{% spaceless %}
+{# vim: set ft=htmldjango: #}{% endspaceless %}
