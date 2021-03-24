@@ -48,6 +48,24 @@ function initSearchByKeyPressEvent(formElementId, formInputId) {
   }
 }
 
+function initTableSortColumnEvent(formElementId, formInputId, columnElement) {
+  const formElement = document.getElementById(formElementId);
+  const formInput = document.getElementById(formInputId);
+  if (formElement && formInput) {
+    const name = columnElement.dataset.name;
+    columnElement.addEventListener('click', function() {
+      if (formInput.value == name) {
+        formInput.value = '-' + name;
+      } else if (formInput.value == '-' + name) {
+        formInput.value = '';
+      } else {
+        formInput.value = name;
+      }
+      formElement.submit();
+    });
+  }
+}
+
 function getNewPrivateKey(privateKeyElementId) {
   const privateKeyElement = document.getElementById(privateKeyElementId);
   fetch('/get_new_private_key')

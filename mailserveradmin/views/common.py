@@ -51,6 +51,54 @@ class FieldsContextMixin():
         }
 
 
+class SortMixin():
+    """
+    default_sort will define the form field that will be sorted as default
+    sort_mapping will map any form field name to one or more db fields
+    sort.value, sort.name and sort.asc will be accessible from the template
+    """
+    def get_default_sort(self):
+        if hasattr(self, 'default_sort'):
+            return self.default_sort
+        else:
+            return ''
+
+    def get_query_order_by(self):
+        sort_name = self.sort.get('name', '')
+        if sort_name:
+            sort_mapping = getattr(self, 'sort_mapping', {})
+            fields = sort_mapping.get(sort_name, sort_name)
+            prefix = '' if self.sort.get('asc', True) else '-'
+            if isinstance(fields, str):
+                return f'{prefix}{fields}'
+            else:
+                return [f'{prefix}{field}' for field in fields]
+        else:
+            return []
+
+    def get_ordering(self):
+        sort_value = self.request.GET.get('sort', self.get_default_sort())
+        self.sort = {
+            'value': sort_value,
+            'name': '',
+            'asc': False,
+        }
+        if sort_value:
+            if sort_value.startswith('-'):
+                self.sort['name'] = sort_value[1:]
+            else:
+                self.sort['name'] = sort_value
+                self.sort['asc'] = True
+        order_by = self.get_query_order_by()
+        print(order_by)
+        return order_by
+
+    def get_context_data(self, *args, **kwargs):
+        return super().get_context_data(*args, **kwargs) | {
+            'sort': self.sort,
+        }
+
+
 class LoginView(CommonContextMixin, OrigLoginView):
     authentication_form = AuthenticationForm
     template_name = f'{app_name}/login.html'

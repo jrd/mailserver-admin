@@ -1,4 +1,4 @@
-{% extends "mailserveradmin/base_crud.html" %}{% load i18n static %}
+{% extends "./base_crud.html" %}{% load i18n static %}
 {% block content-actions %}
     <a class="action-return btn btn-info" href="{% url "mailserveradmin:"|add:model_name|add:"-list" %}">Return</a>
     <button class="btn btn-danger action-confirm-delete" type="submit" onclick="document.getElementById('{{ model_name|add:"_form" }}').submit();">

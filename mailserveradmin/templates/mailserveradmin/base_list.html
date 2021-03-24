@@ -1,13 +1,14 @@
-{% extends "mailserveradmin/base_crud.html" %}{% load i18n static %}
+{% extends "./base_crud.html" %}{% load i18n static %}
 {% block content-actions %}
 <a class="action-new btn btn-primary" href="{% url "mailserveradmin:"|add:model_name|add:"-add" %}">Add {{ model_name|capfirst }}</a>
 {% endblock %}
 {% block content-extra %}
 <div class="content-search">
     <div class="form-action form-action-search">
-        <form method="get" id="search-form">
+        <form method="get" id="searchsort-form">
             <div class="form-group">
                 <div class="form-widget">
+                    <input type="hidden" name="sort" id="sort-input" value="{{ request.GET.sort }}">
                     <input class="form-control" type="search" name="query" id="search-input"
                            value="{{ request.GET.query }}" placeholder="Search" autocomplete="off">
                 </div>
@@ -18,7 +19,7 @@
 <script>
 window.addEventListener('load', (event) => {
     initSearchByKeyPressEvent(
-        'search-form',
+        'searchsort-form',
         'search-input',
     );
 });
@@ -27,7 +28,7 @@ window.addEventListener('load', (event) => {
 {% block content-panel %}
 <div class="content-panel-body">
     {% block content-panel-body %}
-    <table>
+    <table id="table-list">
         <thead>
             <tr>
                 {% block content-table-head-row %}
@@ -48,6 +49,18 @@ window.addEventListener('load', (event) => {
             {% endfor %}
         </tbody>
     </table>
+    <script>
+window.addEventListener('load', (event) => {
+    const tableElement = document.getElementById('table-list');
+    tableElement.querySelectorAll("th > span.sort").forEach(spanSort => {
+        initTableSortColumnEvent(
+            'searchsort-form',
+            'sort-input',
+            spanSort,
+        );
+    });
+});
+    </script>
     {% endblock %}
 </div>
 <div class="content-panel-footer">

@@ -18,6 +18,7 @@ from .common import (
     CommonContextMixin,
     FieldsContextMixin,
     LoginRequiredMixin,
+    SortMixin,
 )
 from .. import app_name
 from ..models import MailUser
@@ -29,8 +30,15 @@ class UserContextMixin(CommonContextMixin):
     }
 
 
-class UserListView(UserContextMixin, LoginRequiredMixin, ListView):
+class UserListView(UserContextMixin, SortMixin, LoginRequiredMixin, ListView):
     model = MailUser
+    default_sort = 'email'
+    sort_mapping = {
+        'email': ('name', 'domain__name'),
+        'enabled': 'is_active',
+        'admin': 'is_admin',
+        'superadmin': 'is_superuser',
+    }
     paginate_by = 50
     context_object_name = 'user_list'
 

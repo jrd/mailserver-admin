@@ -22,6 +22,7 @@ from .common import (
     CommonContextMixin,
     FieldsContextMixin,
     LoginRequiredMixin,
+    SortMixin,
 )
 from .. import app_name
 from ..models import MailDomain
@@ -46,7 +47,7 @@ class DkimDnsRecordView(View):
             dns_record += '"\n"'.join(
                 pub_key[i * parts:(i + 1) * parts] for i in range(ceil(len(pub_key) / parts))
             ) + '"'
-        return dns_record
+            return dns_record
 
     def post(self, request):
         req = loads(request.body.decode('utf8'))
@@ -61,8 +62,9 @@ class DomainContextMixin(CommonContextMixin):
     }
 
 
-class DomainListView(DomainContextMixin, LoginRequiredMixin, ListView):
+class DomainListView(DomainContextMixin, SortMixin, LoginRequiredMixin, ListView):
     model = MailDomain
+    default_sort = 'name'
     paginate_by = 10
     context_object_name = 'domain_list'
 

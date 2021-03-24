@@ -3,7 +3,16 @@ Django settings for mailserveradmin project.
 """
 from os import getenv
 from pathlib import Path
-from socket import gethostbyname_ex, gethostname
+from re import (
+    DOTALL,
+    compile,
+)
+from socket import (
+    gethostbyname_ex,
+    gethostname,
+)
+
+from django.template import base
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,6 +108,8 @@ TEMPLATES = [
         },
     },
 ]
+# allow multiline tags in templates
+base.tag_re = compile(base.tag_re.pattern, DOTALL)
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

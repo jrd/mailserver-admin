@@ -1,54 +1,32 @@
-{% extends "mailserveradmin/base_list.html" %}{% load i18n static %}
+{% extends "./base_list.html" %}{% load i18n static %}
 {% block content-table-head-row %}
-<th class="text-left">
-    <a href="">Email <i class="fa fa-fw fa-sort"></i></a>
-</th>
-<th class="text-right">
-    <span>Enabled</span>
-</th>
-<th class="text-right">
-    <span>Domain admin</span>
-</th>
-<th class="text-right">
-    <span>Super admin</span>
-</th>
-<th class="text-right">
-    <span>Send Only</span>
-</th>
-<th class="text-right">
-    <span>Quota</span>
-</th>
-<th>
-    <span class="sr-only">Actions</span>
-</th>
+{% include "./column_header.html" with label="Email" align="left" sort_name="email" %}
+{% include "./column_header.html" with label="Enabled" align="right" sort_name="enabled" %}
+{% include "./column_header.html" with label="Domain admin" align="right" sort_name="admin" %}
+{% include "./column_header.html" with label="Super admin" align="right" sort_name="superadmin" %}
+{% include "./column_header.html" with label="Send only" align="right" sort_name="send_only" %}
+{% include "./column_header.html" with label="Quota" align="right" sort_name="quota" %}
+{% include "./column_header.html" with type="actions" %}
 {% endblock %}
 {% block content-table-row %}
-<td class="text-left">
-    <a class="action-detail" href="{% url "mailserveradmin:user-detail" object.pk %}">{{ object.email }}</a>
-</td>
-<td class="text-right">
-    <span>{{ object.is_active }}</span>
-</td>
-<td class="text-right">
-    <span>{{ object.is_admin }}</span>
-</td>
-<td class="text-right">
-    <span>{{ object.is_superuser }}</span>
-</td>
-<td class="text-right">
-    <span>{{ object.send_only }}</span>
-</td>
-<td class="text-right">
-    <span>{% if object.quota %}{{ object.quota }} MB{% else %}−{% endif %}</span>
-</td>
-<td class="actions">
-    <a class="action-edit" href="{% url "mailserveradmin:user-update" object.pk %}">Edit</a>
-    <a class="action-delete text-danger" href="{% url "mailserveradmin:user-delete" object.pk %}">Delete</a>
-</td>
+{% include "./column_data.html" with data=object.email align="left"
+    detail_url_base="mailserveradmin:user-detail"
+%}
+{% include "./column_data.html" with data=object.is_active align="right" type="bool" %}
+{% include "./column_data.html" with data=object.is_admin align="right" type="bool" %}
+{% include "./column_data.html" with data=object.is_superuser align="right" type="bool" %}
+{% include "./column_data.html" with data=object.send_only align="right" type="bool" %}
+{% if object.quota %}
+{% include "./column_data.html" with data=object.quota|stringformat:'s'|add:' MB' align="right" %}
+{% else %}
+{% include "./column_data.html" with data='−' align="right" %}
+{% endif %}
+{% include "./column_data.html" with type="actions"
+    edit_url_base="mailserveradmin:user-update"
+    delete_url_base="mailserveradmin:user-delete"
+%}
 {% endblock %}
 {% block content-table-empty %}
-<td class="text-left" colspan="7">
-    <span>No user yet</span>
-</td>
+{% include "./column_data.html" with data="No user yet" colspan="7" %}
 {% endblock %}
 {# vim: set ft=htmldjango: #}

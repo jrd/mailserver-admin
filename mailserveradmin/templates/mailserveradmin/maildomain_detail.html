@@ -1,4 +1,4 @@
-{% extends "mailserveradmin/base_detail.html" %}{% load i18n static %}
+{% extends "./base_detail.html" %}{% load i18n static %}
 {% block detail-extra %}
 <div class="dkim-dns-record">
     <span>Here is the entry you should add to you DNS records:</span>
@@ -10,11 +10,11 @@
 </p>
 <p class="detail-field">
     <span class="detail-field-name">Users</span>
-    <span class="detail-field-value int">{{ domain.users.count }}</span>
+    <span class="detail-field-value num">{{ domain.users.count }}</span>
 </p>
 <p class="detail-field">
     <span class="detail-field-name">Aliases</span>
-    <span class="detail-field-value int">{{ domain.aliases.count }}</span>
+    <span class="detail-field-value num">{{ domain.aliases.count }}</span>
 </p>
 {% endblock %}
 {# vim: set ft=htmldjango: #}

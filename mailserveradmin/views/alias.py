@@ -14,6 +14,7 @@ from .common import (
     CommonContextMixin,
     FieldsContextMixin,
     LoginRequiredMixin,
+    SortMixin,
 )
 from .. import app_name
 from ..models import MailAlias
@@ -25,8 +26,12 @@ class AliasContextMixin(CommonContextMixin):
     }
 
 
-class AliasListView(AliasContextMixin, LoginRequiredMixin, ListView):
+class AliasListView(AliasContextMixin, SortMixin, LoginRequiredMixin, ListView):
     model = MailAlias
+    default_sort = 'source'
+    sort_mapping = {
+        'source': ('name', 'domain__name'),
+    }
     paginate_by = 50
     context_object_name = 'alias_list'
 

@@ -148,6 +148,7 @@ body.login footer {
     margin: 0 5px 0 -5px;
     padding: 0;
     cursor: pointer;
+    user-select: none;
 }
 @media (min-width:1024px) {
     #navigation-toggler {
@@ -217,6 +218,7 @@ body.sidebar-visible #navigation-toggler2 {
     margin: 0 5px 0 -5px;
     padding: 0;
     cursor: pointer;
+    user-select: none;
 }
 #navigation-toggler2 span {
     padding-left: 0.5rem;
@@ -385,6 +387,40 @@ div.content-search input[type="search"].form-control {
     min-width: 100%;
 }
 /* END CRUD HEADER */
+/* BOOLEAN and NUMERIC FIELDS */
+.num > span {
+    font-weight: 400;
+    color: var(--cyan);
+}
+.bool > span > span {
+    display: none;
+}
+.bool > span::before {
+    display: inline-block;
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+}
+.bool > span::after {
+    display: inline-block;
+    content: ' ';
+}
+.bool > span[data-value="no"]::before {
+    background-color: var(--red);
+}
+.bool > span[data-value="no"]::after {
+    content: '✘';
+    color: var(--red);
+}
+.bool > span[data-value="yes"]::before {
+    background-color: var(--green);
+}
+.bool > span[data-value="yes"]::after {
+    content: '✔';
+    color: var(--green);
+}
+/* END BOOLEAN and NUMERIC FIELDS */
 /* LIST */
 .content-panel {
     background: var(--white);
@@ -414,14 +450,24 @@ div.content-search input[type="search"].form-control {
     padding: 0;
     vertical-align: middle;
 }
-.content-panel-body thead a,
-.content-panel-body thead span {
+.content-panel-body thead th > span {
     display: block;
     color: var(--text-color-dark);
     font-weight: 500;
     line-height: 1.357;
     padding: 12px 8px;
     white-space: nowrap;
+}
+.content-panel-body thead th > span.sort {
+    cursor: pointer;
+    color: var(--link-color);
+    user-select: none;
+}
+.content-panel-body thead th > span.sort:hover {
+    filter: invert(30%);
+}
+.content-panel-body thead th > span.sort > i {
+    margin-left: 0.2rem;
 }
 .content-panel-body td {
     padding: 8px;
@@ -506,28 +552,6 @@ span.detail-field-name {
 }
 span.detail-field-value {
     padding-left: 0.5rem;
-}
-span.detail-field-value.int {
-    font-weight: 400;
-}
-span.detail-field-value.bool {
-    display: inline-block;
-    visibility: hidden;
-    font-size: 1px;
-}
-span.detail-field-value.bool::after {
-    display: inline-block;
-    visibility: visible;
-    content: '';
-    width: 12px;
-    height: 12px;
-    border-radius: 12px;
-}
-span.detail-field-value.bool[data-value="False"]::after {
-    background-color: var(--red);
-}
-span.detail-field-value.bool[data-value="True"]::after {
-    background-color: var(--green);
 }
 span.detail-field-value.textarea {
     display: block;

@@ -1,0 +1,19 @@
+{% if type == 'actions' %}
+<td class="actions">
+    <a class="action-edit" href="{% url edit_url_base object.pk %}">Edit</a>
+    <a class="action-delete text-danger" href="{% url delete_url_base object.pk %}">Delete</a>
+</td>
+{% else %}
+<td class="text-{{ align|default:'left' }} {{ type|default:'str' }}">
+    {% if detail_url_base %}
+    <a class="action-detail" href="{% url detail_url_base object.pk %}">{{ data }}</a>
+    {% else %}
+    {% if type == 'bool' %}
+    <span data-value="{{ data|yesno:'yes,no' }}"><span class="value">{{ data }}</span></span>
+    {% else %}
+    <span{% if colspan %} colspan="{{ colspan }}"{% endif %}>{{ data }}</span>
+    {% endif %}
+    {% endif %}
+</td>
+{% endif %}
+{# vim: set ft=htmldjango: #}

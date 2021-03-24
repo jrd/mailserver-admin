@@ -1,48 +1,26 @@
-{% extends "mailserveradmin/base_list.html" %}{% load i18n static %}
+{% extends "./base_list.html" %}{% load i18n static %}
 {% block content-table-head-row %}
-<th class="text-left">
-    <a href="">Name <i class="fa fa-fw fa-sort"></i></a>
-</th>
-<th class="text-right">
-    <span>DKIM used</span>
-</th>
-<th class="text-right">
-    <span>DKIM valid</span>
-</th>
-<th class="text-right">
-    <span>Users</span>
-</th>
-<th class="text-right">
-    <span>Aliases</span>
-</th>
-<th>
-    <span class="sr-only">Actions</span>
-</th>
+{% include "./column_header.html" with label="Name" align="left" sort_name="name" %}
+{% include "./column_header.html" with label="DKIM used" align="right" %}
+{% include "./column_header.html" with label="DKIM valid" align="right" %}
+{% include "./column_header.html" with label="Users" align="right" %}
+{% include "./column_header.html" with label="Aliases" align="right" %}
+{% include "./column_header.html" with type="actions" %}
 {% endblock %}
 {% block content-table-row %}
-<td class="text-left">
-    <a class="action-detail" href="{% url "mailserveradmin:domain-detail" object.pk %}">{{ object.name }}</a>
-</td>
-<td class="text-right">
-    <span>{{ object.dkim_enabled }}</span>
-</td>
-<td class="text-right">
-    <span>{{ object.dkim_validated }}</span>
-</td>
-<td class="text-right">
-    <span>{{ object.users.count }}</span>
-</td>
-<td class="text-right">
-    <span>{{ object.aliases.count }}</span>
-</td>
-<td class="actions">
-    <a class="action-edit" href="{% url "mailserveradmin:domain-update" object.pk %}">Edit</a>
-    <a class="action-delete text-danger" href="{% url "mailserveradmin:domain-delete" object.pk %}">Delete</a>
-</td>
+{% include "./column_data.html" with data=object.name align="left"
+    detail_url_base="mailserveradmin:domain-detail"
+%}
+{% include "./column_data.html" with data=object.dkim_enabled align="right" type="bool" %}
+{% include "./column_data.html" with data=object.dkim_validated align="right" type="bool" %}
+{% include "./column_data.html" with data=object.users.count align="right" type="num" %}
+{% include "./column_data.html" with data=object.aliases.count align="right" type="num" %}
+{% include "./column_data.html" with type="actions"
+    edit_url_base="mailserveradmin:domain-update"
+    delete_url_base="mailserveradmin:domain-delete"
+%}
 {% endblock %}
 {% block content-table-empty %}
-<td class="text-left" colspan="6">
-    <span>No domain yet</span>
-</td>
+{% include "./column_data.html" with data="No domain yet" colspan="6" %}
 {% endblock %}
 {# vim: set ft=htmldjango: #}

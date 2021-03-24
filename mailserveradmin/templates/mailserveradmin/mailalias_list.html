@@ -1,30 +1,20 @@
-{% extends "mailserveradmin/base_list.html" %}{% load i18n static %}
+{% extends "./base_list.html" %}{% load i18n static %}
 {% block content-table-head-row %}
-<th class="text-left">
-    <a href="">Source <i class="fa fa-fw fa-sort"></i></a>
-</th>
-<th class="text-left">
-    <span>Destination</span>
-</th>
-<th>
-    <span class="sr-only">Actions</span>
-</th>
+{% include "./column_header.html" with label="Source" align="left" sort_name="source" %}
+{% include "./column_header.html" with label="Destination" align="left" sort_name="destination" %}
+{% include "./column_header.html" with type="actions" %}
 {% endblock %}
 {% block content-table-row %}
-<td class="text-left">
-    <a class="action-detail" href="{% url "mailserveradmin:alias-detail" object.pk %}">{{ object.source }}</a>
-</td>
-<td class="text-left">
-    <span>{{ object.destination }}</span>
-</td>
-<td class="actions">
-    <a class="action-edit" href="{% url "mailserveradmin:alias-update" object.pk %}">Edit</a>
-    <a class="action-delete text-danger" href="{% url "mailserveradmin:alias-delete" object.pk %}">Delete</a>
-</td>
+{% include "./column_data.html" with data=object.source align="left"
+    detail_url_base="mailserveradmin:alias-detail"
+%}
+{% include "./column_data.html" with data=object.destination align="left" %}
+{% include "./column_data.html" with type="actions"
+    edit_url_base="mailserveradmin:alias-update"
+    delete_url_base="mailserveradmin:alias-delete"
+%}
 {% endblock %}
 {% block content-table-empty %}
-<td class="text-left" colspan="3">
-    <span>No alias yet</span>
-</td>
+{% include "./column_data.html" with data="No alias yet" colspan="3" %}
 {% endblock %}
 {# vim: set ft=htmldjango: #}

@@ -1,0 +1,17 @@
+{% if type == 'actions' %}
+<th class="text-right">
+    <span class="sr-only">Actions</span>
+</th>
+{% else %}
+<th class="text-{{ align|default:'left' }}">
+    {% if sort_name %}
+    <span class="sort" data-name="{{ sort_name }}">
+        <span>{{ label }}</span>
+        <i class="fa fa-fw fa-sort{% if sort.name == sort_name %}{{ sort.asc|yesno:"-down,-up" }}{% endif %}"></i>
+    </span>
+    {% else %}
+    <span>{{ label }}</span>
+    {% endif %}
+</th>
+{% endif %}
+{# vim: set ft=htmldjango: #}

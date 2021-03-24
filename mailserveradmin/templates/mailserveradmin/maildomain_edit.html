@@ -1,4 +1,4 @@
-{% extends "mailserveradmin/base_edit.html" %}{% load i18n static %}
+{% extends "./base_edit.html" %}{% load i18n static %}
 {% block form-extra %}
 <div class="new-private-key">
     <a class="action-new-priv-key btn btn-info" href="" onclick="getNewPrivateKey('{{ form.dkim_private_key.auto_id }}'); return false;">Generate new private key</a>
