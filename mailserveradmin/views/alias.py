@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.forms.models import ModelForm
 from django.urls import reverse_lazy
 from django.views.generic import (
     DetailView,
@@ -56,14 +57,47 @@ class AliasView(AliasContextMixin, FieldsContextMixin, LoginRequiredMixin, Detai
     fields = ['name', 'domain', 'destination']
 
 
+class AliasCreateForm(ModelForm):
+    def __init__(self, *args, user, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+        if not user.is_superuser:
+            self.fields.pop('domain', None)
+
+    def set_domain(self, alias):
+        if not self.user.is_superuser:
+            alias.domain = self.user.domain
+
+    def save(self, commit=True):
+        alias = super().save(commit=False)
+        self.set_domain(alias)
+        if commit:
+            alias.save()
+        return alias
+
+    class Meta:
+        model = MailAlias
+        fields = ['name', 'domain', 'destination']
+
+
 class AliasCreateView(AliasContextMixin, LoginRequiredMixin, CreateView):
     model = MailAlias
+    form_class = AliasCreateForm
     template_name_suffix = '_create'
     success_url = reverse_lazy(f'{app_name}:alias-list')
-    fields = ['name', 'domain', 'destination']
+
+    def get_form_kwargs(self):
+        return super().get_form_kwargs() | {
+            'user': self.request.user,
+        }
+
+
+class AliasEditForm(AliasCreateForm):
+    pass
 
 
 class AliasUpdateView(AliasCreateView, UpdateView):
+    form_class = AliasEditForm
     template_name_suffix = '_edit'
 
 

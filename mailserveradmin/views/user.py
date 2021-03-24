@@ -78,10 +78,15 @@ class UserCreateForm(ModelForm):
         }),
     )
 
-    @staticmethod
-    def static_clean(self):
-        cleaned_data = super(type(self), self).clean()
-        if not cleaned_data['domain'] and not cleaned_data['is_superuser']:
+    def __init__(self, *args, user, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+        if not user.is_superuser:
+            self.fields.pop('domain', None)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.user.is_superuser and not cleaned_data['is_superuser'] and not cleaned_data['domain']:
             self.add_error('domain', ValidationError('Domain required when not super admin', code='domain_required'))
         pwd = cleaned_data.get('password')
         pwd2 = cleaned_data.get('password2')
@@ -89,19 +94,20 @@ class UserCreateForm(ModelForm):
             self.add_error('password2', ValidationError('Passwords mismatch', code='mismatch'))
         return cleaned_data
 
-    def clean(self):
-        return self.static_clean(self)
+    def set_domain(self, user):
+        if not self.user.is_superuser:
+            user.domain = self.user.domain
 
-    @staticmethod
-    def static_save(self, commit):
-        user = super(type(self), self).save(commit=False)
+    def set_password(self, user):
         user.set_password(self.cleaned_data['password'])
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        self.set_domain(user)
+        self.set_password(user)
         if commit:
             user.save()
         return user
-
-    def save(self, commit=True):
-        return self.static_save(self, commit)
 
     class Meta:
         model = MailUser
@@ -116,8 +122,13 @@ class UserCreateView(UserContextMixin, LoginRequiredMixin, CreateView):
     template_name_suffix = '_create'
     success_url = reverse_lazy(f'{app_name}:user-list')
 
+    def get_form_kwargs(self):
+        return super().get_form_kwargs() | {
+            'user': self.request.user,
+        }
 
-class UserEditForm(ModelForm):
+
+class UserEditForm(UserCreateForm):
     password = CharField(
         max_length=255, required=False, label="New password",
         widget=PasswordInput(attrs={
@@ -133,14 +144,9 @@ class UserEditForm(ModelForm):
         }),
     )
 
-    def clean(self):
-        return UserCreateForm.static_clean(self)
-
-    def save(self, commit=True):
+    def set_password(self, user):
         if self.cleaned_data.get('password'):
-            return UserCreateForm.static_save(self, commit)
-        else:
-            return super().save(commit=commit)
+            super().set_password(user)
 
     class Meta:
         model = MailUser
