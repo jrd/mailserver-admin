@@ -90,7 +90,6 @@ class SortMixin():
                 self.sort['name'] = sort_value
                 self.sort['asc'] = True
         order_by = self.get_query_order_by()
-        print(order_by)
         return order_by
 
     def get_context_data(self, *args, **kwargs):

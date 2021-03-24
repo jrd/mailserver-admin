@@ -1,7 +1,7 @@
 {% extends "./base_list.html" %}{% load i18n static %}
 {% block content-table-head-row %}
 {% include "./column_header.html" with label="Name" align="left" sort_name="name" %}
-{% include "./column_header.html" with label="DKIM used" align="right" %}
+{% include "./column_header.html" with label="DKIM used" align="right" sort_name="dkim_enabled" %}
 {% include "./column_header.html" with label="DKIM valid" align="right" %}
 {% include "./column_header.html" with label="Users" align="right" %}
 {% include "./column_header.html" with label="Aliases" align="right" %}
