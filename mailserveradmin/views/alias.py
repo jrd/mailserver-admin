@@ -1,6 +1,9 @@
 from django.db.models import Q
 from django.forms.models import ModelForm
-from django.urls import reverse_lazy
+from django.urls import (
+    reverse,
+    reverse_lazy,
+)
 from django.views.generic import (
     DetailView,
     ListView,
@@ -33,7 +36,7 @@ class AliasListView(AliasContextMixin, SortMixin, LoginRequiredMixin, ListView):
     sort_mapping = {
         'source': ('name', 'domain__name'),
     }
-    paginate_by = 50
+    paginate_by = 10
     context_object_name = 'alias_list'
 
     def get_queryset(self):
@@ -90,6 +93,12 @@ class AliasCreateView(AliasContextMixin, LoginRequiredMixin, CreateView):
         return super().get_form_kwargs() | {
             'user': self.request.user,
         }
+
+    def get_success_url(self):
+        if self.request.POST.get('again', '0') == '1':
+            return reverse(f'{app_name}:alias-add')
+        else:
+            return reverse(f'{app_name}:alias-list')
 
 
 class AliasEditForm(AliasCreateForm):

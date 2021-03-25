@@ -3,7 +3,10 @@ from django.db.models import Q
 from django.forms.fields import CharField
 from django.forms.models import ModelForm
 from django.forms.widgets import PasswordInput
-from django.urls import reverse_lazy
+from django.urls import (
+    reverse,
+    reverse_lazy,
+)
 from django.views.generic import (
     DetailView,
     ListView,
@@ -39,7 +42,7 @@ class UserListView(UserContextMixin, SortMixin, LoginRequiredMixin, ListView):
         'admin': 'is_admin',
         'superadmin': 'is_superuser',
     }
-    paginate_by = 50
+    paginate_by = 10
     context_object_name = 'user_list'
 
     def get_queryset(self):
@@ -120,12 +123,17 @@ class UserCreateView(UserContextMixin, LoginRequiredMixin, CreateView):
     model = MailUser
     form_class = UserCreateForm
     template_name_suffix = '_create'
-    success_url = reverse_lazy(f'{app_name}:user-list')
 
     def get_form_kwargs(self):
         return super().get_form_kwargs() | {
             'user': self.request.user,
         }
+
+    def get_success_url(self):
+        if self.request.POST.get('again', '0') == '1':
+            return reverse(f'{app_name}:user-add')
+        else:
+            return reverse(f'{app_name}:user-list')
 
 
 class UserEditForm(UserCreateForm):

@@ -4,7 +4,10 @@ from math import ceil
 
 from Crypto.PublicKey import RSA
 from django.http import JsonResponse
-from django.urls import reverse_lazy
+from django.urls import (
+    reverse,
+    reverse_lazy,
+)
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (
@@ -97,7 +100,6 @@ class DomainView(DomainContextMixin, FieldsContextMixin, LoginRequiredMixin, Det
 class DomainCreateView(DomainContextMixin, LoginRequiredMixin, CreateView):
     model = MailDomain
     template_name_suffix = '_create'
-    success_url = reverse_lazy(f'{app_name}:domain-list')
     fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
 
     def get_form(self):
@@ -123,6 +125,12 @@ class DomainCreateView(DomainContextMixin, LoginRequiredMixin, CreateView):
         return ctx | {
             'dns_record': dns_record,
         }
+
+    def get_success_url(self):
+        if self.request.POST.get('again', '0') == '1':
+            return reverse(f'{app_name}:domain-add')
+        else:
+            return reverse(f'{app_name}:domain-list')
 
 
 class DomainUpdateView(DomainCreateView, UpdateView):
