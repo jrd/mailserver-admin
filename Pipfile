@@ -4,6 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+# More commands for Django
+django-extensions = "~=3.1"
+# This is not active unless DEBUG is True
+django-debug-toolbar = "~=3.0"
 # PEP8
 flake8 = "*"
 # TODO in codes as WARNING checkstyle
@@ -19,17 +23,12 @@ psycopg2-binary = "~=2.8"
 
 [packages]
 django = "~=3.1"
-# More commands for Django
-django-extensions = "~=3.1"
 # Fontawesome (free version)
 fontawesome-free = "~=5.14"
 # for DKIM RSA keys
 pycryptodome = "~=3.0"
 # to check DNS records
 dnspython = "~=1.0"
-# needed in non-dev-packages because it’s listing in application list.
-# This is not active unless DEBUG is True
-django-debug-toolbar = "~=3.0"
 
 [requires]
 python_version = "3.9"

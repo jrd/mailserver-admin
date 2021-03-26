@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin as OrigLoginRequiredMixin
 from django.contrib.auth.views import LoginView as OrigLoginView
 from django.contrib.auth.views import LogoutView  # noqa F401
@@ -10,13 +11,14 @@ from django.urls import (
 from django.views.generic import View
 from django.views.generic.base import ContextMixin
 
-from .. import app_name
+from .. import app_name, __version__
 from ..forms import AuthenticationForm
 
 extra_context = {
-    'webmail_url': 'https://webmail.enialis.net',
-    'vendor_name': "Sources on Github",
-    'vendor_url': 'https://github.com/jrd/mailserver-admin',
+    'webmail_url': settings.WEBMAIL_URL,
+    'vendor_name': settings.VENDOR_NAME,
+    'vendor_url': settings.VENDOR_URL,
+    'version': '' if settings.HIDE_VERSION else __version__,
 }
 
 

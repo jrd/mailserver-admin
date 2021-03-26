@@ -15,7 +15,7 @@ from socket import (
 from django.template import base
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'ec0x-y(=w&lc$p-i(qv)4i-tuiuizxx&_@wujzr12xzaa#hags')
 DEBUG = getenv('DJANGO_DEBUG', 'False').lower() in ('true', '1', 'on')
@@ -60,15 +60,31 @@ if DEBUG:
         # tricks to have debug toolbar when developing with docker
         *[ip[:-1] + '1' for ip in gethostbyname_ex(gethostname())[2]]
     ]
+try:
+    from django_extensions.apps import DjangoExtensionsConfig
+    assert(DjangoExtensionsConfig)
+    django_extensions_available = True
+except ImportError:
+    django_extensions_available = False
+try:
+    from debug_toolbar.middleware import DebugToolbarMiddleware
+    assert(DebugToolbarMiddleware)
+    debug_toolbar_available = True
+except ImportError:
+    debug_toolbar_available = False
 
 INSTALLED_APPS = [
-    'django_extensions',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
+]
+if debug_toolbar_available:
+    INSTALLED_APPS.append('django_extensions')
+if debug_toolbar_available:
+    INSTALLED_APPS.append('debug_toolbar')
+INSTALLED_APPS += [
     'fontawesome-free',
     'mailserveradmin',
 ]
@@ -76,7 +92,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+if debug_toolbar_available:
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+MIDDLEWARE += [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -84,11 +103,34 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+DB_TYPES = {
+    'mysql': 'django.db.backends.mysql',
+    'postgres': 'django.db.backends.postgresql',
+}
+DATABASES = {
+    'default': {
+        'ENGINE': DB_TYPES[getenv('DJANGO_DB_TYPE', 'mysql')],
+        'HOST': getenv('DJANGO_DB_HOST', 'db'),
+        'PORT': getenv('DJANGO_DB_PORT', ''),  # default port
+        'NAME': getenv('DJANGO_DB_NAME', 'mailserver'),
+        'USER': getenv('DJANGO_DB_USER', 'mailserver'),
+        'PASSWORD': getenv('DJANGO_DB_PASSWORD', 'changeme'),
+    }
+}
+
 AUTH_USER_MODEL = 'mailserveradmin.MailUser'
 AUTHENTICATION_BACKENDS = (
     'mailserveradmin.auth.MailAuthBackend',
 )
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+ROOT_URLCONF = 'mailserveradmin.config.urls'
 LOGIN_REDIRECT_URL = 'mailserveradmin:domain-list'
 LOGOUT_REDIRECT_URL = 'mailserveradmin:login'
 
@@ -110,38 +152,7 @@ TEMPLATES = [
 # allow multiline tags in templates
 base.tag_re = compile(base.tag_re.pattern, DOTALL)
 
-WSGI_APPLICATION = 'config.wsgi.application'
-
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-DB_TYPES = {
-    'mysql': 'django.db.backends.mysql',
-    'postgres': 'django.db.backends.postgresql',
-}
-DATABASES = {
-    'default': {
-        'ENGINE': DB_TYPES[getenv('DJANGO_DB_TYPE', 'mysql')],
-        'HOST': getenv('DJANGO_DB_HOST', 'db'),
-        'PORT': getenv('DJANGO_DB_PORT', ''),  # default port
-        'NAME': getenv('DJANGO_DB_NAME', 'mailserver'),
-        'USER': getenv('DJANGO_DB_USER', 'mailserver'),
-        'PASSWORD': getenv('DJANGO_DB_PASSWORD', 'changeme'),
-    }
-}
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+WSGI_APPLICATION = 'mailserveradmin.config.wsgi.application'
 
 SESSION_COOKIE_AGE = 30 * 86400  # 30 days
 if getenv('DJANGO_NO_HTTPS', 'False').lower() not in ('true', '1', 'on'):
@@ -164,6 +175,11 @@ USE_TZ = True
 
 # If proxied, which is often the case
 USE_X_FORWARDED_HOST = True
+
+WEBMAIL_URL = getenv('DJANGO_WEBMAIL_URL', '')
+VENDOR_NAME = getenv('DJANGO_VENDOR_NAME', 'Sources')
+VENDOR_URL = getenv('DJANGO_VENDOR_URL', 'https://github.com/jrd/mailserver-admin')
+HIDE_VERSION = getenv('DJANGO_HIDE_VERSION', str(not DEBUG)).lower() in ('true', '1', 'on')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'

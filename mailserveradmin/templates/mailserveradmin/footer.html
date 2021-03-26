@@ -1,0 +1,15 @@
+{% spaceless %}
+{% if webmail_url %}
+<a href="{{ webmail_url }}" target="_blank" class="btn btn-secondary">Webmail</a><br/>
+{% endif %}
+{% if vendor_name %}
+{% if vendor_url %}
+<a href="{{ vendor_url }}" target="_blank" class="btn btn-secondary">{{ vendor_name }}</a>
+{% else %}
+<small>{{ vendor_name }}</small>
+{% endif %}
+{% endif %}
+{% if version %}
+<small>version {{ version }}</small>
+{% endif %}
+{# vim: set ft=htmldjango: #}{% endspaceless %}

@@ -1,0 +1,8 @@
+# vim: set ft=config:
+[mysql]
+# Mysql/Mariadb driver
+mysqlclient = "~=2.0"
+
+[postgresql]
+# Postgresql driver
+psycopg2-binary = "~=2.8"

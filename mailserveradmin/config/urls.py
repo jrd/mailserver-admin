@@ -1,4 +1,4 @@
-"""config URL Configuration
+"""mailserveradmin.config URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -20,9 +20,12 @@ urlpatterns = [
     re_path('^', include('mailserveradmin.urls')),
 ]
 if settings.DEBUG:
-    import debug_toolbar
+    try:
+        import debug_toolbar
+        urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns
+    except ImportError:
+        pass
     from django.conf.urls.static import static
-    urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    # Allow favicon.ico to be served
-    urlpatterns += static('/favicon.ico', document_root=settings.BASE_DIR / 'favicon.ico')
+    # Allow favicon.ico to be served at root url
+    urlpatterns += static('/favicon.ico', document_root=settings.STATIC_ROOT / 'favicon.ico')

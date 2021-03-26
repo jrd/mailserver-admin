@@ -1,1 +1,4 @@
-/static
+build/
+dist/
+to_serve/
+*.egg-info/

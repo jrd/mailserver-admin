@@ -79,12 +79,12 @@ window.addEventListener('load', (event) => {
             {% if is_paginated %}
             <li class="page-item{% if not page_obj.has_previous %} disabled{% endif %}">
                 <a class="page-link" href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}{% else %}javascript:void(0);{% endif %}">
-                    <i class="fa fa-angle-left mx-1"></i> <span class="btn-label">Previous</span>
+                    <i class="fa fa-angle-left"></i> <span class="btn-label">Previous</span>
                 </a>
             </li>
             <li class="page-item{% if not page_obj.has_next %} disabled{% endif %}">
                 <a class="page-link" href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% else %}javascript:void(0);{% endif %}">
-                    <span class="btn-label">Next</span> <i class="fa fa-angle-right mx-1"></i>
+                    <span class="btn-label">Next</span> <i class="fa fa-angle-right"></i>
                 </a>
             </li>
             {% endif %}

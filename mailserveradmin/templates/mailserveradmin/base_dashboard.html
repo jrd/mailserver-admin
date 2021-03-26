@@ -1,5 +1,6 @@
 {% extends "./base.html" %}{% load i18n static %}
 {% block title %}{{ title }}{% endblock %}
+{% block bodyclass %}dashboard{% endblock %}
 {% block header %}
     <nav class="navbar" role="navigation">
         <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
@@ -56,6 +57,6 @@
 </main>
 {% endblock %}
 {% block footer %}
-    <small class="text-muted"><a href="{{ vendor_url }}" target="_blank">{{ vendor_name }}</a></small>
+{% include "./footer.html" with footer_class="dashboard" %}
 {% endblock %}
 {# vim: set ft=htmldjango: #}

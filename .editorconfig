@@ -3,9 +3,10 @@ root = true
 [*.py]
 indent_style = space
 indent_size = 4
-line_length = 160
+line_length = 120
 skip_glob = mailserveradmin/migrations/*
 skip_gitignore = true
+# isort
 multi_line_output = 3
 reverse_relative = true
 use_parentheses = true
