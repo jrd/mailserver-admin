@@ -30,6 +30,50 @@ Optional:
 - `DJANGO_VENDOR_URL`: any url you want to be linked to your vendor name, default to this repository url. Set to empty to disable the link.
 - `DJANGO_HIDE_VERSION`: default `False` if `DJANGO_DEBUG` else `True`. Set to `True` to hide the `mailserver-admin` version.
 
+Install from Docker Hub
+-----------------------
+
+Using `docker` directly:
+```sh
+docker run --name msa \
+    -p 80:80 \
+    -e DJANGO_SECRET_KEY=12345678901234567890abcdefghijklmnopqrstuvwxyz \
+    -e DJANGO_DB_TYPE=mysql \
+    -e DJANGO_DB_PASSWORD=pwd \
+    --link yourmariadb:db \
+    jrdasm/mailserver-admin:<version>
+docker exec -ti msa pipenv run ./manage.py createsuperuser
+```
+
+Of course this is simple using `docker-compose`:
+```yaml
+...
+services:
+    db:
+        image: mariadb
+        environment:
+            - "MYSQL_RANDOM_ROOT_PASSWORD=yes"
+            - "MYSQL_DATABASE=mailserver"
+            - "MYSQL_USER=mailserver"
+            - "MYSQL_PASSWORD=pwd"
+    ...
+    msa:
+        image: jrdasm/mailserver-admin:<version>
+        environment:
+            - "DJANGO_SECRET_KEY=12345678901234567890abcdefghijklmnopqrstuvwxyz"
+            - "DJANGO_DB_TYPE=mysql"
+            - "DJANGO_DB_NAME=mailserver"
+            - "DJANGO_DB_USER=mailserver"
+            - "DJANGO_DB_PASSWORD=pwd"
+        ports:
+            - "80:80"
+...
+```
+
+```sh
+docker-compose exec msa pipenv run ./manage.py createsuperuser
+```
+
 Install from PyPi
 -----------------
 

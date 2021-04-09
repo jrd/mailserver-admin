@@ -1,4 +1,4 @@
-.PHONY: default clean venv bump_version build twine test_upload pypi_upload
+.PHONY: default clean venv bump_version build twine test_upload pypi_upload image docker_upload
 
 default:
 	@echo "make TARGET"
@@ -9,6 +9,8 @@ default:
 	@echo "  build: create source and wheel packages"
 	@echo "  test_upload: build and upload packages to testpypi (always do this first)"
 	@echo "  pypi_upload: build and upload packages to pypi"
+	@echo "  image: build docker image"
+	@echo "  docker_upload: upload docker image"
 
 clean:
 	@rm -rf build dist mailserveradmin/to_serve *.egg-info 2>/dev/null
@@ -52,3 +54,17 @@ test_upload: build twine
 
 pypi_upload: build twine
 	python -m twine upload dist/*
+
+image:
+	@VER_MODULE="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f2- | rev)"; \
+	VER_VAR="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f1 | rev)"; \
+	VER="$$(python -c 'from '$${VER_MODULE}' import '$${VER_VAR}' as ver; print(ver)')"; \
+	export DOCKER_BUILDKIT=1; \
+	echo Building jrdasm/mailserver-admin:$${VER} && \
+	docker build --no-cache --pull --build-arg GIT_TAG=$${VER} -t jrdasm/mailserver-admin:$${VER} .
+
+docker_upload:
+	@VER_MODULE="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f2- | rev)"; \
+	VER_VAR="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f1 | rev)"; \
+	VER="$$(python -c 'from '$${VER_MODULE}' import '$${VER_VAR}' as ver; print(ver)')"; \
+	docker push jrdasm/mailserver-admin:$${VER}
