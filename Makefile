@@ -1,4 +1,4 @@
-.PHONY: default clean venv bump_version build twine test_upload pypi_upload image docker_upload
+.PHONY: default clean bump_version build twine test_upload pypi_upload image docker_upload semver
 
 default:
 	@echo "make TARGET"
@@ -16,12 +16,6 @@ clean:
 	@rm -rf build dist mailserveradmin/to_serve *.egg-info 2>/dev/null
 	@find . -type d -name __pycache__ -prune -exec rm -rf '{}' \;
 
-venv:
-	@if [ -z "$$VIRTUAL_ENV" ]; then \
-	    echo "You should activate the virtualenv: pipenv shell" >&2; \
-	    exit 1; \
-	fi
-
 mailserveradmin/to_serve:
 	@mkdir -p mailserveradmin/to_serve; \
 	python -m django collectstatic --noinput && \
@@ -31,29 +25,32 @@ mailserveradmin/to_serve:
 	find fontawesome_free -mindepth 1 -maxdepth 1 -type d -not \( -name 'css' -o -name 'webfonts' \) -exec rm -rf '{}' \; \
 	)
 
-bump_version: venv
+semver:
+	@pipenv run pip freeze | grep -q ^semver= >/dev/null || pipenv run pip install semver
+
+bump_version: semver
 	@if ! echo "$(what)" | grep -q '^major\|minor\|patch$$'; then \
 	    echo "You should specify 'what' variable with one of major, minor or patch" >&2; \
 	    exit 1; \
 	fi; \
 	VER_MODULE="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f2- | rev)"; \
 	VER_VAR="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f1 | rev)"; \
-	NEW_VER="$$(python -c 'from '$${VER_MODULE}' import '$${VER_VAR}' as ver; from semver import parse_version_info; print(parse_version_info(ver).bump_$(what)())')"; \
+	NEW_VER="$$(pipenv run python -c 'from '$${VER_MODULE}' import '$${VER_VAR}' as ver; from semver import parse_version_info; print(parse_version_info(ver).bump_$(what)())')"; \
 	OLD_VER="$$(python -c 'from '$${VER_MODULE}' import '$${VER_VAR}' as ver; print(ver)')"; \
 	echo "$${OLD_VER} → $${NEW_VER}"; \
 	sed -ri "/^$${VER_VAR} =/{s/'.*'/'$${NEW_VER}'/}" $${VER_MODULE}/__init__.py
 
-build: clean venv mailserveradmin/to_serve
-	python setup.py sdist bdist_wheel
+build: clean mailserveradmin/to_serve
+	pipenv run python setup.py sdist bdist_wheel
 
-twine: venv
-	@pip freeze | grep -q ^twine= >/dev/null || pip install twine
+twine:
+	@pipenv run pip freeze | grep -q ^twine= >/dev/null || pipenv run pip install twine
 
 test_upload: build twine
-	python -m twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
+	pipenv run python -m twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
 
 pypi_upload: build twine
-	python -m twine upload dist/*
+	pipenv run python -m twine upload dist/*
 
 image:
 	@VER_MODULE="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f2- | rev)"; \
