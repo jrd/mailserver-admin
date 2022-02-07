@@ -13,9 +13,10 @@ from django.views.generic.edit import (
     DeleteView,
     UpdateView,
 )
+from guardian.shortcuts import assign_perm
 
 from .common import (
-    CommonContextMixin,
+    CrudContextMixin,
     FieldsContextMixin,
     LoginRequiredMixin,
     SortMixin,
@@ -24,10 +25,15 @@ from .. import app_name
 from ..models import MailAlias
 
 
-class AliasContextMixin(CommonContextMixin):
-    extra_context = CommonContextMixin.extra_context | {
-        'model_name': 'alias',
-    }
+class AliasContextMixin(CrudContextMixin):
+    def get_template_model_name(self):
+        return 'alias'
+
+    def get_parent_object(self):
+        if self.request.user.is_superuser:
+            return None
+        else:
+            return self.request.user.domain
 
 
 class AliasListView(AliasContextMixin, SortMixin, LoginRequiredMixin, ListView):
@@ -71,11 +77,23 @@ class AliasCreateForm(ModelForm):
         if not self.user.is_superuser:
             alias.domain = self.user.domain
 
+    def set_permissions(self, alias):
+        model_name = MailAlias._meta.model_name
+        view_perm = f'view_{model_name}'
+        change_perm = f'change_{model_name}'
+        delete_perm = f'delete_{model_name}'
+        for domain_user in alias.domain.users.all():
+            assign_perm(view_perm, domain_user, alias)
+            if domain_user.is_admin:
+                assign_perm(change_perm, domain_user, alias)
+                assign_perm(delete_perm, domain_user, alias)
+
     def save(self, commit=True):
         alias = super().save(commit=False)
         self.set_domain(alias)
         if commit:
             alias.save()
+            self.set_permissions(alias)
         return alias
 
     class Meta:

@@ -8,6 +8,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from guardian.mixins import GuardianUserMixin
 from django.db import models
 from django.urls import reverse
 
@@ -43,7 +44,7 @@ class MailUserManager(BaseUserManager):
         return user
 
 
-class MailUser(AbstractBaseUser, PermissionsMixin):
+class MailUser(AbstractBaseUser, GuardianUserMixin, PermissionsMixin):
     name = models.CharField(max_length=255, validators=[username_validator])
     password = models.CharField(max_length=255, help_text="encrypted password")
     is_superuser = models.BooleanField(default=False, db_column='superadmin', help_text="admin for all domains")
@@ -118,6 +119,7 @@ class MailUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = 'mail_user'
         ordering = ['name', 'domain__name']
+        permissions = [('add_domain', "Can add a new domain")]
         constraints = [
             models.UniqueConstraint(fields=['name', 'domain'], name='user_idx'),
         ]

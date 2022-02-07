@@ -61,3 +61,7 @@ class MailDomain(models.Model):
     class Meta:
         db_table = 'mail_domain'
         ordering = ['name']
+        permissions = [
+            ('add_mailuser', "Can add a user to this domain"),
+            ('add_mailalias', "Can add an alias to this domain"),
+        ]

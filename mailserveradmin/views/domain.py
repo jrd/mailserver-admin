@@ -22,7 +22,7 @@ from django.views.generic.edit import (
 )
 
 from .common import (
-    CommonContextMixin,
+    CrudContextMixin,
     FieldsContextMixin,
     LoginRequiredMixin,
     SortMixin,
@@ -59,10 +59,12 @@ class DkimDnsRecordView(View):
         return JsonResponse({'dns_record': self.get_dns_record(selector, private_key_pem)})
 
 
-class DomainContextMixin(CommonContextMixin):
-    extra_context = CommonContextMixin.extra_context | {
-        'model_name': 'domain',
-    }
+class DomainContextMixin(CrudContextMixin):
+    def get_template_model_name(self):
+        return 'domain'
+
+    def get_parent_object(self):
+        return self.request.user
 
 
 class DomainListView(DomainContextMixin, SortMixin, LoginRequiredMixin, ListView):

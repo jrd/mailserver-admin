@@ -26,6 +26,29 @@ class CommonContextMixin(ContextMixin):
     extra_context = extra_context
 
 
+class CrudContextMixin(CommonContextMixin):
+    def get_template_model_name(self):
+        raise NotImplementedError
+
+    def get_parent_object(self):
+        raise NotImplementedError
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        template_model_name = self.get_template_model_name()
+        ctx['template_model_name'] = template_model_name
+        model_name = self.model._meta.model_name
+        add_perm = f'add_{model_name}'
+        ctx['add_permission'] = add_perm
+        ctx['view_permission'] = f'view_{model_name}'
+        ctx['change_permission'] = f'change_{model_name}'
+        ctx['delete_permission'] = f'delete_{model_name}'
+        user = self.request.user
+        parent_object = self.get_parent_object()
+        ctx['can_add'] = user.has_perm(add_perm) if parent_object is None else user.has_perm(add_perm, parent_object)
+        return ctx
+
+
 class FieldsContextMixin():
     field_types = {
         model_fields.IntegerField: 'num',

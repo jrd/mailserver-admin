@@ -1,17 +1,3 @@
-{% extends "./base_dashboard.html" %}{% load i18n static %}
-{% block title %}{{ model_name|capfirst }} administration{% endblock %}
-{% block content %}
-<div class="content-header">
-    <div class="title">
-        <h1>{{ model_name|capfirst }}</h1>
-    </div>
-    <div class="actions">
-        {% block content-actions %}{% endblock %}
-    </div>
-</div>
-{% block content-extra %}{% endblock %}
-<div class="content-panel">
-    {% block content-panel %}{% endblock %}
-</div>
-{% endblock %}
+{% extends "./base_crud0.html" %}
+{% block _content-actions1 %}{% block _content-actions2 %}{% block content-actions %}{% endblock %}{% endblock %}{% endblock %}
 {# vim: set ft=htmldjango: #}

@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.2
-FROM python:3.9-alpine3.13
+# syntax=docker/dockerfile:1.3
+FROM python:3.9-alpine3.15
 LABEL maintainer="Cyrille Pontvieux <cyrille@enialis.net>"
 RUN apk update && \
     apk upgrade && \

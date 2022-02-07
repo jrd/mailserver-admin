@@ -20,7 +20,9 @@ watchdog = "*"
 mysqlclient = "~=2.0"
 # Postgresql driver
 psycopg2-binary = "~=2.8"
+# better debugger
 pdbpp = "*"
+isort = "*"
 
 [packages]
 django = "~=3.1"
@@ -30,6 +32,7 @@ fontawesomefree = "~=5.14"
 pycryptodome = "~=3.0"
 # to check DNS records
 dnspython = "~=1.0"
+django-guardian = "*"
 
 [requires]
 python_version = "3.9"

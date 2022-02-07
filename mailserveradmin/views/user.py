@@ -16,21 +16,34 @@ from django.views.generic.edit import (
     DeleteView,
     UpdateView,
 )
+from guardian.shortcuts import (
+    assign_perm,
+    remove_perm,
+)
+from guardian.utils import get_anonymous_user
 
 from .common import (
-    CommonContextMixin,
+    CrudContextMixin,
     FieldsContextMixin,
     LoginRequiredMixin,
     SortMixin,
 )
 from .. import app_name
-from ..models import MailUser
+from ..models import (
+    MailAlias,
+    MailUser,
+)
 
 
-class UserContextMixin(CommonContextMixin):
-    extra_context = CommonContextMixin.extra_context | {
-        'model_name': 'user',
-    }
+class UserContextMixin(CrudContextMixin):
+    def get_template_model_name(self):
+        return 'user'
+
+    def get_parent_object(self):
+        if self.request.user.is_superuser:
+            return None
+        else:
+            return self.request.user.domain
 
 
 class UserListView(UserContextMixin, SortMixin, LoginRequiredMixin, ListView):
@@ -46,7 +59,8 @@ class UserListView(UserContextMixin, SortMixin, LoginRequiredMixin, ListView):
     context_object_name = 'user_list'
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        guardian_anonnymous_user = get_anonymous_user()
+        qs = super().get_queryset().exclude(id=guardian_anonnymous_user.id)
         if not self.request.user.is_superuser:
             assert(self.request.user.is_admin)
             qs = qs.filter(domain=self.request.user.domain)
@@ -85,7 +99,8 @@ class UserCreateForm(ModelForm):
         self.user = user
         super().__init__(*args, **kwargs)
         if not user.is_superuser:
-            self.fields.pop('domain', None)
+            self.fields.pop('is_superuser')
+            self.fields.pop('domain')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -95,6 +110,8 @@ class UserCreateForm(ModelForm):
         pwd2 = cleaned_data.get('password2')
         if pwd and pwd2 and pwd != pwd2:
             self.add_error('password2', ValidationError('Passwords mismatch', code='mismatch'))
+        if not pwd and not self.fields['password'].required:
+            cleaned_data.pop('password')
         return cleaned_data
 
     def set_domain(self, user):
@@ -104,12 +121,50 @@ class UserCreateForm(ModelForm):
     def set_password(self, user):
         user.set_password(self.cleaned_data['password'])
 
+    def set_permissions(self, user):
+        model_user_name = MailUser._meta.model_name
+        add_user_perm = f'add_{model_user_name}'
+        view_user_perm = f'view_{model_user_name}'
+        change_user_perm = f'change_{model_user_name}'
+        delete_user_perm = f'delete_{model_user_name}'
+        model_alias_name = MailAlias._meta.model_name
+        add_alias_perm = f'add_{model_alias_name}'
+        view_alias_perm = f'view_{model_alias_name}'
+        change_alias_perm = f'change_{model_alias_name}'
+        delete_alias_perm = f'delete_{model_alias_name}'
+        assign_perm(view_user_perm, user, user)
+        if user.is_admin:
+            assign_perm(add_user_perm, user, user.domain)
+            for domain_user in user.domain.users.all():
+                assign_perm(view_user_perm, user, domain_user)
+                assign_perm(change_user_perm, user, domain_user)
+                assign_perm(delete_user_perm, user, domain_user)
+                if domain_user.is_admin and domain_user != user:
+                    assign_perm(view_user_perm, domain_user, user)
+                    assign_perm(change_user_perm, domain_user, user)
+                    assign_perm(delete_user_perm, domain_user, user)
+            assign_perm(add_alias_perm, user, user.domain)
+            for domain_alias in user.domain.aliases.all():
+                assign_perm(view_alias_perm, user, domain_alias)
+                assign_perm(change_alias_perm, user, domain_alias)
+                assign_perm(delete_alias_perm, user, domain_alias)
+        else:  # user edition case
+            remove_perm(add_user_perm, user, user.domain)
+            for domain_user in user.domain.users.all():
+                remove_perm(change_user_perm, user, domain_user)
+                remove_perm(delete_user_perm, user, domain_user)
+            remove_perm(add_alias_perm, user, user.domain)
+            for domain_alias in user.domain.aliases.all():
+                remove_perm(change_alias_perm, user, domain_alias)
+                remove_perm(delete_alias_perm, user, domain_alias)
+
     def save(self, commit=True):
         user = super().save(commit=False)
         self.set_domain(user)
         self.set_password(user)
         if commit:
             user.save()
+            self.set_permissions(user)
         return user
 
     class Meta:

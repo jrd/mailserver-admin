@@ -1,6 +1,8 @@
 {% extends "./base_crud.html" %}{% load i18n static %}
 {% block content-actions %}
-<a class="action-new btn btn-primary" href="{% url "mailserveradmin:"|add:model_name|add:"-add" %}">Add {{ model_name|capfirst }}</a>
+{% if can_add %}
+<a class="action-new btn btn-primary" href="{% url "mailserveradmin:"|add:template_model_name|add:"-add" %}">Add {{ template_model_name|capfirst }}</a>
+{% endif %}
 {% endblock %}
 {% block content-extra %}
 <div class="content-search">

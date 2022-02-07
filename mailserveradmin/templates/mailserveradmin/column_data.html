@@ -1,19 +1,23 @@
-{% spaceless %}{% if type == 'actions' %}
+{% spaceless %}{% if type == 'actions' %}{% load guardian_tags %}
 <td class="actions">
+    {% get_obj_perms user for object as "perms" %}
+    {% if change_permission in perms %}
     <a class="action-edit" href="{% url edit_url_base object.pk %}">Edit</a>
+    {% endif %}
+    {% if delete_permission in perms %}
     <a class="action-delete text-danger" href="{% url delete_url_base object.pk %}">Delete</a>
+    {% endif %}
 </td>
 {% else %}
 <td class="text-{{ align|default:'left' }} {{ type|default:'str' }}">
-    {% if detail_url_base %}
-    <a class="action-detail" href="{% url detail_url_base object.pk %}">{{ data }}</a>
-    {% else %}
+    {% if detail_url_base %}<a class="action-detail" href="{% url detail_url_base object.pk %}">{% endif %}
+    {% if list_url %}<a class="action-list" href="{% url list_url %}{% if list_query %}?query={{ list_query }}{% endif %}">{% endif %}
     {% if type == 'bool' %}
     <span data-value="{{ data|yesno:'yes,no' }}"><span class="value">{{ data }}</span></span>
     {% else %}
     <span{% if colspan %} colspan="{{ colspan }}"{% endif %}>{{ data }}</span>
     {% endif %}
-    {% endif %}
+    {% if detail_url_base or list_url %}</a>{% endif %}
 </td>
 {% endif %}
 {# vim: set ft=htmldjango: #}{% endspaceless %}

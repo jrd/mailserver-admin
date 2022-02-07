@@ -912,7 +912,8 @@ div.glass-pane.show {
 
 /* ****************************** */
 /* CRUD HEADER */
-div.content-header {
+div.content-header,
+div.content-footer {
     display: flex;
     justify-content: space-between;
     align-content: center;
@@ -922,24 +923,31 @@ div.content-header {
     background-color: var(--body-bg);
     padding: 10px 0;
 }
-div.content-header div.title {
+div.content-footer {
+    margin-bottom: 20px;
+}
+div.content-header div.title,
+div.content-footer div.title {
     align-self: center;
     flex: 1;
 }
-div.content-header div.title > h1 {
+div.content-header div.title > h1,
+div.content-footer div.title > h1 {
     font-size: var(--font-size-xl);
     font-weight: 500;
     line-height: 1;
     color: var(--text-color-dark);
     margin: 0;
 }
-div.content-header div.actions {
+div.content-header div.actions,
+div.content-footer div.actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-left: 10px;
 }
-div.content-header div.actions .btn {
+div.content-header div.actions .btn,
+div.content-footer div.actions .btn {
     margin-left: 10px;
 }
 div.content-search {
@@ -1021,6 +1029,9 @@ body.dashboard footer > a {
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-lg);
     margin-bottom: 20px;
+}
+.content-panel.with-footer {
+    margin-bottom: 0px;
 }
 .content-panel-body {
     min-height: 250px;

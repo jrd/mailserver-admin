@@ -1,0 +1,25 @@
+{% extends "./base_dashboard.html" %}{% load i18n static %}
+{% block title %}{{ template_model_name|capfirst }} administration{% endblock %}
+{% block content %}
+<div class="content-header">
+    <div class="title">
+        <h1>{{ template_model_name|capfirst }}</h1>
+    </div>
+    <div class="actions">
+        {% block _content-actions1 %}{% endblock %}
+    </div>
+</div>
+{% block content-extra %}{% endblock %}
+<div class="content-panel with-footer">
+    {% block content-panel %}{% endblock %}
+</div>
+<div class="content-footer">
+    <div class="title">
+        <h1>{{ template_model_name|capfirst }}</h1>
+    </div>
+    <div class="actions">
+        {% block _content-actions2 %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+{# vim: set ft=htmldjango: #}

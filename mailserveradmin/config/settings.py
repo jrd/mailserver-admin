@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'guardian',
 ]
 if debug_toolbar_available:
     INSTALLED_APPS.append('django_extensions')
@@ -122,8 +123,10 @@ DATABASES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'mailserveradmin.MailUser'
+GUARDIAN_MONKEY_PATCH = False
 AUTHENTICATION_BACKENDS = (
     'mailserveradmin.auth.MailAuthBackend',
+    'guardian.backends.ObjectPermissionBackend',
 )
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -131,6 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
+GUARDIAN_RAISE_403 = True
 
 ROOT_URLCONF = 'mailserveradmin.config.urls'
 LOGIN_REDIRECT_URL = 'mailserveradmin:domain-list'

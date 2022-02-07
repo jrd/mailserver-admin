@@ -13,8 +13,14 @@
 %}
 {% include "./column_data.html" with data=object.dkim_enabled align="right" type="bool" %}
 {% include "./column_data.html" with data=object.dkim_validated align="right" type="bool" %}
-{% include "./column_data.html" with data=object.users.count align="right" type="num" %}
-{% include "./column_data.html" with data=object.aliases.count align="right" type="num" %}
+{% include "./column_data.html" with data=object.users.count align="right" type="num"
+    list_url="mailserveradmin:user-list"
+    list_query=object.name
+%}
+{% include "./column_data.html" with data=object.aliases.count align="right" type="num"
+    list_url="mailserveradmin:alias-list"
+    list_query=object.name
+%}
 {% include "./column_data.html" with type="actions"
     edit_url_base="mailserveradmin:domain-update"
     delete_url_base="mailserveradmin:domain-delete"
