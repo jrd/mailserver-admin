@@ -2,7 +2,6 @@ from crypt import (
     METHOD_SHA256,
     crypt,
 )
-from hmac import compare_digest as compare_hash
 
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -92,9 +91,12 @@ class MailUser(AbstractBaseUser, PermissionsMixin):
             self.password = crypt(raw_password, salt=METHOD_SHA256)
 
     def check_password(self, raw_password):
-        return compare_hash(crypt(raw_password, self.password), self.password)
+        pwd = self.password
+        salt = pwd if pwd and pwd.startswith(f'${METHOD_SHA256.ident}$') else METHOD_SHA256
+        return crypt(raw_password, salt=salt) == self.password
 
     def set_unusable_password(self):
+        # does not start with $\d$
         self.password = '*'
 
     def has_usable_password(self):

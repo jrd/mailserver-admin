@@ -103,8 +103,9 @@ Define the required environment variables then:
 export DJANGO_SETTINGS_MODULE=mailserveradmin.config.settings
 pipenv run django migrate
 pipenv run django createsuperuser
-TODO
 ```
+
+You can use `pipenv run django migrate --fake-initial` if you already have a mysql or postgresql database with existing schema/data.
 
 You can now server the application using any **WSGI** server pointing to `$(VISUAL='readlink -f' pipenv open mailserveradmin|tail -n1)/config/wsgi.py`.
 
