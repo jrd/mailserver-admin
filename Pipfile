@@ -24,7 +24,7 @@ psycopg2-binary = "~=2.8"
 [packages]
 django = "~=3.1"
 # Fontawesome (free version)
-fontawesome-free = "~=5.14"
+fontawesomefree = "~=5.14"
 # for DKIM RSA keys
 pycryptodome = "~=3.0"
 # to check DNS records

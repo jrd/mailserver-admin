@@ -114,7 +114,7 @@ class MailUser(AbstractBaseUser, PermissionsMixin):
         return reverse('user-detail', kwargs={'pk': self.pk})
 
     class Meta:
-        db_table = 'mail_users'
+        db_table = 'mail_user'
         ordering = ['name', 'domain__name']
         constraints = [
             models.UniqueConstraint(fields=['name', 'domain'], name='user_idx'),

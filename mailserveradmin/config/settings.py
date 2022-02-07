@@ -86,7 +86,7 @@ if debug_toolbar_available:
 if debug_toolbar_available:
     INSTALLED_APPS.append('debug_toolbar')
 INSTALLED_APPS += [
-    'fontawesome-free',
+    'fontawesomefree',
     'mailserveradmin',
 ]
 
@@ -119,6 +119,7 @@ DATABASES = {
         'PASSWORD': getenv('DJANGO_DB_PASSWORD', 'changeme'),
     }
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'mailserveradmin.MailUser'
 AUTHENTICATION_BACKENDS = (

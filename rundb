@@ -1,0 +1,16 @@
+#!/bin/sh
+if [ "${DJANGO_DB_TYPE:-mysql}" = "postgres" ]; then
+    docker container inspect pg >/dev/null 2>&1
+    pg_ok=$?
+    if [ $pg_ok -ne 0 ]; then
+        echo "run postgresql on port 5432"
+        docker run --rm -d --name pg -e POSTGRES_USER=mailserver -e POSTGRES_PASSWORD=changeme -p 5432:5432 postgres:14
+    fi
+else
+    docker container inspect mysql >/dev/null 2>&1
+    mysql_ok=$?
+    if [ $mysql_ok -ne 0 ]; then
+        echo "run mysql on port 3306"
+        docker run --rm -d --name mysql -e MYSQL_DATABASE=mailserver -e MYSQL_USER=mailserver -e MYSQL_PASSWORD=changeme -e MYSQL_RANDOM_ROOT_PASSWORD=yes -p 3306:3306 mysql:5.7
+    fi
+fi

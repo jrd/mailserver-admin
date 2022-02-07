@@ -2,10 +2,7 @@ from configparser import ConfigParser
 from json import loads
 from pathlib import Path
 
-from setuptools import (
-    find_packages,
-    setup,
-)
+from setuptools import setup
 
 # https://github.com/pypa/sampleproject/blob/master/setup.py
 # https://packaging.python.org/guides/distributing-packages-using-setuptools

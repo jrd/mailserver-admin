@@ -59,5 +59,5 @@ class MailDomain(models.Model):
         return reverse('domain-detail', kwargs={'pk': self.pk})
 
     class Meta:
-        db_table = 'mail_domains'
+        db_table = 'mail_domain'
         ordering = ['name']
