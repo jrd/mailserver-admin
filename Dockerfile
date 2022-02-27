@@ -14,9 +14,8 @@ RUN apk update && \
         nginx \
         postgresql-client \
         postgresql-dev \
-        supervisor \
     && \
-    pip3 install pipenv
+    pip3 install pipenv supervisor
 # configure uwsgi
 RUN mkdir -p /var/run/nginx && \
     chown -R nginx:nginx /var/run /run && \
@@ -120,9 +119,9 @@ if [ -z "$DJANGO_SECRET_KEY" ] || [ -z "$DJANGO_DB_TYPE" ]; then\n\
 fi\n\
 maxsec=120\n\
 if [ "$DJANGO_DB_TYPE" = "postgres" ]; then\n\
-  dbnosql='\q'\n\
+  dbnosql="\\q"\n\
 elif [ "$DJANGO_DB_TYPE" = "mysql" ]; then\n\
-  dbnosql=''\n\
+  dbnosql=""\n\
 else\n\
   echo "DJANGO_DB_TYPE value not supported" >&2\n\
   exit 1\n\
@@ -146,8 +145,8 @@ WORKDIR /var/www/app
 ARG GIT_URL=https://github.com/jrd/mailserver-admin.git
 ARG GIT_TAG
 LABEL version=$GIT_TAG
-RUN git clone --branch "$GIT_TAG" --depth 1 "$GIT_URL" . && \
-    rm -rf .git*
+RUN git clone --branch "$GIT_TAG" --depth 1 "$GIT_URL"
+RUN rm -rf .git* .env
 RUN PIPENV_VERBOSITY=-1 pipenv sync && \
     echo "*** Installing extra packages" && \
     grep '^[a-z]' Pipfile.extra | sed -r 's/ = "(.*)"/\1/' > reqs.txt && pipenv run pip install -r reqs.txt && rm reqs.txt && \

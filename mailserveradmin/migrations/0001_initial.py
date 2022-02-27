@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='MailDomain',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_collation='utf8_unicode_ci', max_length=255, unique=True)),
+                ('name', models.CharField(max_length=255, unique=True)),
             ],
             options={
                 'db_table': 'mail_domains',

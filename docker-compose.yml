@@ -1,0 +1,18 @@
+version: "2.4"
+services:
+  db:
+    image: postgres:14
+    environment:
+      - "POSTGRES_DB=mailserver"
+      - "POSTGRES_USER=mailserver"
+      - "POSTGRES_PASSWORD=mailserver"
+  msa:
+    image: jrdasm/mailserver-admin:local
+    environment:
+      - "DJANGO_SECRET_KEY=12345678901234567890abcdefghijklmnopqrstuvwxyz"
+      - "DJANGO_DB_TYPE=postgres"
+      - "DJANGO_DB_NAME=mailserver"
+      - "DJANGO_DB_USER=mailserver"
+      - "DJANGO_DB_PASSWORD=mailserver"
+    ports:
+      - "8000:80"

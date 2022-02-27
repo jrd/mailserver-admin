@@ -53,12 +53,16 @@ pypi_upload: build twine
 	pipenv run python -m twine upload dist/*
 
 image:
-	@VER_MODULE="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f2- | rev)"; \
+	@if [ -z "$$VER" ]; then VER_MODULE="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f2- | rev)"; \
 	VER_VAR="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f1 | rev)"; \
-	VER="$$(python -c 'from '$${VER_MODULE}' import '$${VER_VAR}' as ver; print(ver)')"; \
+	VER="$$(python -c 'from '$${VER_MODULE}' import '$${VER_VAR}' as ver; print(ver)')"; fi; \
 	export DOCKER_BUILDKIT=1; \
 	echo Building jrdasm/mailserver-admin:$${VER} && \
-	docker build --no-cache --pull --build-arg GIT_TAG=$${VER} -t jrdasm/mailserver-admin:$${VER} .
+	if [ "$$VER" = "local" ]; then \
+	  sed -r 's/^.* git clone .*/COPY --chown=nginx: . ./' Dockerfile | docker build --pull -t jrdasm/mailserver-admin:local -f - .; \
+	else \
+	  docker build $$([ -n "$$WITH_CACHE" ] || echo '--no-cache') --pull --build-arg GIT_TAG=$${VER} -t jrdasm/mailserver-admin:$${VER} .; \
+	fi
 
 docker_upload:
 	@VER_MODULE="$$(sed -rn '/^version =/{s/.* attr: (.*)/\1/p}' setup.cfg | rev | cut -d. -f2- | rev)"; \

@@ -3,3 +3,4 @@ dist/
 to_serve/
 *.egg-info/
 __pycache__/
+.env
