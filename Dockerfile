@@ -145,7 +145,7 @@ WORKDIR /var/www/app
 ARG GIT_URL=https://github.com/jrd/mailserver-admin.git
 ARG GIT_TAG
 LABEL version=$GIT_TAG
-RUN git clone --branch "$GIT_TAG" --depth 1 "$GIT_URL"
+RUN git clone --branch "$GIT_TAG" --depth 1 "$GIT_URL" .
 RUN rm -rf .git* .env
 RUN PIPENV_VERBOSITY=-1 pipenv sync && \
     echo "*** Installing extra packages" && \
