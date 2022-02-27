@@ -182,6 +182,7 @@ USE_TZ = True
 # If proxied, which is often the case
 USE_X_FORWARDED_HOST = True
 
+DKIM_PATH = getenv('DJANGO_DKIM_PATH', '/etc/dkim')
 WEBMAIL_URL = getenv('DJANGO_WEBMAIL_URL', '')
 VENDOR_NAME = getenv('DJANGO_VENDOR_NAME', 'Sources')
 VENDOR_URL = getenv('DJANGO_VENDOR_URL', 'https://github.com/jrd/mailserver-admin')

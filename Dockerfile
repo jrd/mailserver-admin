@@ -139,7 +139,16 @@ if [ $dbok -eq 1 ]; then\n\
 else\n\
   echo "$dbnosql" | pipenv run ./manage.py dbshell\n\
 fi\n\
-' > /etc/entrypoint.d/00_app.env
+' > /etc/entrypoint.d/00_app.env && \
+    printf '\
+#!/bin/sh\n\
+set -e\n\
+mkdir -p ${DJANGO_DKIM_PATH:-/etc/dkim}\n\
+chown -R nginx: ${DJANGO_DKIM_PATH:-/etc/dkim}\n\
+' > /etc/entrypoint.d/01_dkim.sh && \
+    chmod +x /etc/entrypoint.d/01_dkim.sh
+RUN mkdir -p /etc/dkim && chown nginx: /etc/dkim
+VOLUME /etc/dkim
 USER nginx
 WORKDIR /var/www/app
 ARG GIT_URL=https://github.com/jrd/mailserver-admin.git

@@ -25,6 +25,7 @@ Optional:
 - `DJANGO_LOG_LEVEL`: default to `WARNING` (`INFO` if `DJANGO_DEBUG`).
 - `DJANGO_RUNSERVER_LOG_LEVEL`: default to `INFO` (`DEBUG` if `DJANGO_DEBUG`). Used only when run with `runserver` or `runserver_plus`.
 - `DJANGO_TZ`: timezone, defaut to `UTC`.
+- `DJANGO_DKIM_PATH`: directory path to store dkim private key and selectors. To be used by `rspamd-dkim`. Default to `/etc/dkim`.
 - `DJANGO_WEBMAIL_URL`: webmail url to show in the footer, default to no link.
 - `DJANGO_VENDOR_NAME`: any vendor name you want to appear on the footer, default to *Sources*.
 - `DJANGO_VENDOR_URL`: any url you want to be linked to your vendor name, default to this repository url. Set to empty to disable the link.

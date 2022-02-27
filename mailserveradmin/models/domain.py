@@ -1,8 +1,12 @@
+from pathlib import Path
+from time import sleep
 from re import compile
 
 from Crypto.PublicKey import RSA
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from dns.exception import DNSException
@@ -65,3 +69,49 @@ class MailDomain(models.Model):
             ('add_mailuser', "Can add a user to this domain"),
             ('add_mailalias', "Can add an alias to this domain"),
         ]
+
+
+@receiver(models.signals.post_save, sender=MailDomain)
+@receiver(models.signals.pre_delete, sender=MailDomain)
+def store_pkeys_on_domain_post_update(sender, instance, **kwargs):
+    if kwargs.get('raw'):
+        return
+    dkim_path_name = settings.DKIM_PATH
+    if not dkim_path_name:
+        return
+    dkim_path = Path(dkim_path_name)
+    dkim_path.mkdir(parents=True, exist_ok=True)
+    lock_file = dkim_path / '.lock'
+    # ten seconds is more than enough to update some simple text files
+    # but the DNS query could take a bit of time
+    MAX_WAIT_SEC = 10
+    wait_sec = 0
+    while lock_file.exists():
+        sleep(1)
+        wait_sec += 1
+        if wait_sec > MAX_WAIT_SEC:
+            # force to continue
+            lock_file.unlink()
+            break
+    try:
+        lock_file.touch()
+        if instance.dkim_validated:
+            with (dkim_path / f'{instance.name}.{instance.dkim_selector}.key').open('w', encoding='utf8') as f:
+                f.write(instance.dkim_private_key)
+                f.write('\n')
+            with (dkim_path / 'dkim_selectors.map').open('w+', encoding='utf8') as f:
+                lines = sorted(
+                    [line for line in f.readlines() if not line.startswith(f'{instance.name} ')]
+                    + [f'{instance.name} {instance.dkim_selector}\n']
+                )
+                f.seek(0)
+                f.writelines(lines)
+        else:
+            for key in dkim_path.glob(f'{instance.name}.*.key'):
+                key.unlink()
+            with (dkim_path / 'dkim_selectors.map').open('w+', encoding='utf8') as f:
+                lines = [line for line in f.readlines() if not line.startswith(f'{instance.name} ')]
+                f.seek(0)
+                f.writelines(lines)
+    finally:
+        lock_file.unlink()

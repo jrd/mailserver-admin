@@ -14,5 +14,9 @@ services:
       - "DJANGO_DB_NAME=mailserver"
       - "DJANGO_DB_USER=mailserver"
       - "DJANGO_DB_PASSWORD=mailserver"
+    volumes:
+      - "dkim:/etc/dkim:rw"
     ports:
       - "8000:80"
+volumes:
+  dkim:

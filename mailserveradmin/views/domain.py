@@ -99,9 +99,8 @@ class DomainView(DomainContextMixin, FieldsContextMixin, LoginRequiredMixin, Det
         }
 
 
-class DomainCreateView(DomainContextMixin, LoginRequiredMixin, CreateView):
+class DomainViewBaseMixin(DomainContextMixin, LoginRequiredMixin):
     model = MailDomain
-    template_name_suffix = '_create'
     fields = ['name', 'dkim_enabled', 'dkim_selector', 'dkim_private_key']
 
     def get_form(self):
@@ -109,15 +108,6 @@ class DomainCreateView(DomainContextMixin, LoginRequiredMixin, CreateView):
         form.fields['dkim_private_key'].widget.attrs['cols'] = 80
         form.fields['dkim_private_key'].widget.attrs['rows'] = 15
         return form
-
-    def get_initial(self):
-        selector = str(date.today().year)
-        private_key_pem = RSA.generate(2048).export_key().decode('ascii')
-        return {
-            'dkim_enabled': True,
-            'dkim_selector': selector,
-            'dkim_private_key': private_key_pem,
-        }
 
     def get_context_data(self):
         ctx = super().get_context_data()
@@ -135,7 +125,20 @@ class DomainCreateView(DomainContextMixin, LoginRequiredMixin, CreateView):
             return reverse(f'{app_name}:domain-list')
 
 
-class DomainUpdateView(DomainCreateView, UpdateView):
+class DomainCreateView(DomainViewBaseMixin, CreateView):
+    template_name_suffix = '_create'
+
+    def get_initial(self):
+        selector = str(date.today().year)
+        private_key_pem = RSA.generate(2048).export_key().decode('ascii')
+        return {
+            'dkim_enabled': True,
+            'dkim_selector': selector,
+            'dkim_private_key': private_key_pem,
+        }
+
+
+class DomainUpdateView(DomainViewBaseMixin, UpdateView):
     template_name_suffix = '_edit'
 
 
