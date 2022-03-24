@@ -1,6 +1,7 @@
 from datetime import date
 from json import loads
 from math import ceil
+from sys import stderr
 
 from Crypto.PublicKey import RSA
 from django.http import JsonResponse
@@ -43,14 +44,18 @@ class DkimDnsRecordView(View):
     def get_dns_record(cls, selector, private_key_pem):
         dns_record = ''
         if selector and private_key_pem:
-            priv_key = RSA.import_key(private_key_pem)
-            pub_key = ''.join(priv_key.public_key().export_key().decode('ascii').split('\n')[1:-1])
-            dns_record = f'{selector}._domainkey 300 IN TXT "v=DKIM1; h=sha256; t=s; p='
-            parts = 40
-            dns_record += '"\n"'.join(
-                pub_key[i * parts:(i + 1) * parts] for i in range(ceil(len(pub_key) / parts))
-            ) + '"'
-            return dns_record
+            try:
+                priv_key = RSA.import_key(private_key_pem)
+                pub_key = ''.join(priv_key.public_key().export_key().decode('ascii').split('\n')[1:-1])
+                dns_record = f'{selector}._domainkey 300 IN TXT "v=DKIM1; h=sha256; t=s; p='
+                parts = 40
+                dns_record += '"\n"'.join(
+                    pub_key[i * parts:(i + 1) * parts] for i in range(ceil(len(pub_key) / parts))
+                ) + '"'
+            except ValueError as e:
+                print(e, file=stderr)
+                dns_record = str(e)
+        return dns_record
 
     def post(self, request):
         req = loads(request.body.decode('utf8'))

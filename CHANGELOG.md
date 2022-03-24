@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Next
 ### Fixed
 - Allow any IP to connect this admin instance. Useful in docker context.
+- Don’t crash if the DKIM private key cannot be correctly read.
 
 ## 0.11.0
 ### Fixed
